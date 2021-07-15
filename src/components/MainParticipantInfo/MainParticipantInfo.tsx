@@ -17,6 +17,9 @@ import useScreenShareParticipant from '../../hooks/useScreenShareParticipant/use
 import useTrack from '../../hooks/useTrack/useTrack';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
+// Asteroids
+import sio from '../../connection/sio';
+
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     position: 'relative',
@@ -139,6 +142,17 @@ export default function MainParticipantInfo({ participant, children }: MainParti
 
   const isRecording = useIsRecording();
 
+  const mainFrameOnClick = function(e: React.MouseEvent) {
+    let clickMsg = {
+      x: e.clientX,
+      y: e.clientY,
+      w: (e.target as Element).clientWidth,
+      h: (e.target as Element).clientHeight,
+    };
+    console.log(`Clicked ${clickMsg.x} ${clickMsg.y} on ${clickMsg.w} and ${clickMsg.h}`);
+    sio.emit('pinpoint', clickMsg);
+  };
+
   return (
     <div
       data-cy-main-participant
@@ -147,7 +161,7 @@ export default function MainParticipantInfo({ participant, children }: MainParti
         [classes.fullWidth]: !isRemoteParticipantScreenSharing,
       })}
     >
-      <div className={classes.infoContainer}>
+      <div className={classes.infoContainer} onClick={mainFrameOnClick}>
         <div style={{ display: 'flex' }}>
           <div className={classes.identity}>
             <AudioLevelIndicator audioTrack={audioTrack} />
