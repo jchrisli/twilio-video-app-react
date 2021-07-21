@@ -68,10 +68,11 @@ export default function ParticipantList() {
             const hideParticipant =
               participant === mainParticipant && participant !== screenShareParticipant && !isSelected;
             const display =
-              (isMobile && !participant.identity.startswith('mobile')) ||
-              (!isMobile && participant.identity.startswith('mobile'));
+              (isMobile && !participant.identity.startsWith('mobile')) ||
+              (!isMobile && participant.identity.startsWith('mobile'));
             if (display) {
               return (
+                // <div/>
                 <Participant
                   key={participant.sid}
                   participant={participant}
