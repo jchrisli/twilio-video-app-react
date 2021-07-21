@@ -62,7 +62,6 @@ export default function ParticipantList() {
     >
       <div className={classes.scrollContainer}>
         <div className={classes.innerScrollContainer}>
-          <Participant participant={localParticipant} isLocalParticipant={true} />
           {participants.map(participant => {
             const isSelected = participant === selectedParticipant;
             const hideParticipant =
@@ -72,7 +71,6 @@ export default function ParticipantList() {
               (!isMobile && participant.identity.startsWith('mobile'));
             if (display) {
               return (
-                // <div/>
                 <Participant
                   key={participant.sid}
                   participant={participant}
