@@ -10,7 +10,7 @@ This application demonstrates a multi-party video application built with [Twilio
 - No other infrastructure is required
 - No code changes are required before your first deploy
 - There is no cost associated with deploying the app
-- Go Rooms usage is free, however [standard usage charges](https://www.twilio.com/video/pricing) apply for Programmable Video when using the app with all other Room types. The chat feature is built using the Conversations API and is free-of-cost up to 200 monthly active users, [standard usage charges](https://www.twilio.com/conversations/pricing) apply thereafter.
+- Go Rooms usage is free, however [standard usage charges](https://www.twilio.com/video/pricing) apply for Programmable Video when using the app with all other Room types. 
 
 ![App Preview](https://user-images.githubusercontent.com/12685223/94631109-cfca1c80-0284-11eb-8b72-c97276cf34e4.png)
 
@@ -41,7 +41,7 @@ This app requires an additional plugin. Install the CLI plugin with:
 
     $ twilio plugins:install @twilio-labs/plugin-rtc
 
-**Note:** If you have previously installed the `@twilio-labs/plugin-rtc` plugin, please make sure that you are using the most recent version. You can upgrade the plugin by running `twilio plugins:update`. The chat feature requires version 0.8.1 or greater of `@twilio-labs/plugin-rtc`.
+**Note:** If you have previously installed the `@twilio-labs/plugin-rtc` plugin, please make sure that you are using the most recent version. You can upgrade the plugin by running `twilio plugins:update`. 
 
 ## Deploy the app to Twilio
 
@@ -102,7 +102,6 @@ If the max number of participants is exceeded, then the video app will present a
 The Video app has the following features:
 
 - [x] Video conferencing with real-time video and audio
-- [x] Chat support for textual and file-based messaging
 - [x] Enable/disable camera
 - [x] Mute/unmute mic
 - [x] Screen sharing
@@ -119,7 +118,7 @@ See browser support table for [twilio-video.js SDK](https://github.com/twilio/tw
 
 ### Running a local token server
 
-This application requires an access token to connect to a Room for Video and a Conversation for Chat. The included local token [server](server/index.ts) provides the application with access tokens. This token server can be used to run the app locally, and it is the server that is used when this app is run in development mode with `npm start`. Perform the following steps to setup the local token server:
+This application requires an access token to connect to a Room for Video. The included local token [server](server/index.ts) provides the application with access tokens. This token server can be used to run the app locally, and it is the server that is used when this app is run in development mode with `npm start`. Perform the following steps to setup the local token server:
 
 - Create an account in the [Twilio Console](https://www.twilio.com/console).
 - Click on 'Settings' and take note of your Account SID.
@@ -229,7 +228,7 @@ In this hook, the `useEffect` hook is used to subscribe to the `dominantSpeakerC
 
 For more information on how React hooks can be used with the Twilio Video SDK, see this tutorial: https://www.twilio.com/blog/video-chat-react-hooks. To see all of the hooks used by this application, look in the `src/hooks` directory.
 
-The [VideoProvider](src/components/VideoProvider/index.tsx) component contains much of the logic that relates to connecting to video rooms and acquiring local input devices. The VideoProvider component exposes many properties and methods to the rest of the application through the [useVideoContext](src/hooks/useVideoContext/useVideoContext.ts) hook. Similarly, the [ChatProvider](src/components/ChatProvider/index.tsx) contains logic that relates to connecting to a Twilio Conversation, and it exposes properties and methods through the [useChatContext](src/hooks/useChatContext/useChatContext.ts) hook.
+The [VideoProvider](src/components/VideoProvider/index.tsx) component contains much of the logic that relates to connecting to video rooms and acquiring local input devices. The VideoProvider component exposes many properties and methods to the rest of the application through the [useVideoContext](src/hooks/useVideoContext/useVideoContext.ts) hook. 
 
 ### Configuration
 
