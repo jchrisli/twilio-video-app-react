@@ -7,6 +7,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import useScreenShareParticipant from '../../hooks/useScreenShareParticipant/useScreenShareParticipant';
+import { isMobile } from '../../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,21 +62,26 @@ export default function ParticipantList() {
     >
       <div className={classes.scrollContainer}>
         <div className={classes.innerScrollContainer}>
-          <Participant participant={localParticipant} isLocalParticipant={true} />
           {participants.map(participant => {
             const isSelected = participant === selectedParticipant;
             const hideParticipant =
               participant === mainParticipant && participant !== screenShareParticipant && !isSelected;
-            return (
-              <Participant
-                key={participant.sid}
-                participant={participant}
-                isSelected={participant === selectedParticipant}
-                onClick={() => setSelectedParticipant(participant)}
-                hideParticipant={hideParticipant}
-              />
-            );
+            const display =
+              (isMobile && !participant.identity.startsWith('mobile')) ||
+              (!isMobile && participant.identity.startsWith('mobile'));
+            if (display) {
+              return (
+                <Participant
+                  key={participant.sid}
+                  participant={participant}
+                  isSelected={participant === selectedParticipant}
+                  onClick={() => setSelectedParticipant(participant)}
+                  hideParticipant={hideParticipant}
+                />
+              );
+            }
           })}
+          )}
         </div>
       </div>
     </aside>
