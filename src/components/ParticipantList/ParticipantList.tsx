@@ -6,7 +6,6 @@ import useMainParticipant from '../../hooks/useMainParticipant/useMainParticipan
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
-import useScreenShareParticipant from '../../hooks/useScreenShareParticipant/useScreenShareParticipant';
 import { isMobile } from '../../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,9 +47,8 @@ export default function ParticipantList() {
   const localParticipant = room!.localParticipant;
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
-  const screenShareParticipant = useScreenShareParticipant();
   const mainParticipant = useMainParticipant();
-  const isRemoteParticipantScreenSharing = screenShareParticipant && screenShareParticipant !== localParticipant;
+  const isRemoteParticipantScreenSharing = false;
 
   if (participants.length === 0) return null; // Don't render this component if there are no remote participants.
 

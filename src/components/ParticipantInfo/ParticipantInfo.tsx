@@ -7,7 +7,6 @@ import AudioLevelIndicator from '../AudioLevelIndicator/AudioLevelIndicator';
 import AvatarIcon from '../../icons/AvatarIcon';
 import NetworkQualityLevel from '../NetworkQualityLevel/NetworkQualityLevel';
 import PinIcon from './PinIcon/PinIcon';
-import ScreenShareIcon from '../../icons/ScreenShareIcon';
 import Typography from '@material-ui/core/Typography';
 
 import useIsTrackSwitchedOff from '../../hooks/useIsTrackSwitchedOff/useIsTrackSwitchedOff';
@@ -88,15 +87,6 @@ const useStyles = makeStyles((theme: Theme) =>
       background: 'rgba(40, 42, 43, 0.75)',
       zIndex: 1,
     },
-    screenShareIconContainer: {
-      background: 'rgba(0, 0, 0, 0.5)',
-      padding: '0.18em 0.3em',
-      marginRight: '0.3em',
-      display: 'flex',
-      '& path': {
-        fill: 'white',
-      },
-    },
     identity: {
       background: 'rgba(0, 0, 0, 0.5)',
       color: 'white',
@@ -150,7 +140,6 @@ export default function ParticipantInfo({
   const videoPublication = publications.find(p => p.trackName.includes('camera'));
 
   const isVideoEnabled = Boolean(videoPublication);
-  const isScreenShareEnabled = publications.find(p => p.trackName.includes('screen'));
 
   const videoTrack = useTrack(videoPublication);
   const isVideoSwitchedOff = useIsTrackSwitchedOff(videoTrack as LocalVideoTrack | RemoteVideoTrack);
@@ -172,11 +161,6 @@ export default function ParticipantInfo({
       <div className={classes.infoContainer}>
         <NetworkQualityLevel participant={participant} />
         <div className={classes.infoRowBottom}>
-          {isScreenShareEnabled && (
-            <span className={classes.screenShareIconContainer}>
-              <ScreenShareIcon />
-            </span>
-          )}
           <span className={classes.identity}>
             <AudioLevelIndicator audioTrack={audioTrack} />
             <Typography variant="body1" className={classes.typeography} component="span">
