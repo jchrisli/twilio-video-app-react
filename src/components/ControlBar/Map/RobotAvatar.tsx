@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     return {
       position: 'absolute',
       borderRadius: '50%',
-      backgroundColor: props.hasControl ? '#9acd32' : props.on ? '#21b6a8' : '#888', // Green if has control, blue if on the robot, grey otherwise
+      backgroundColor: props.hasControl ? '#9acd32' : props.on ? '#eb6534' : '#888', // Green if has control, blue if on the robot, grey otherwise
       left: `${props.x - size / 2}px`,
       top: `${props.y - size / 2}px`,
       color: '#eee',
@@ -42,9 +42,5 @@ export default function RobotAvatar(props: RobotAvatarProps) {
   // const localName = room!.localParticipant.identity;
   const classes = useStyles(props);
 
-  return (
-    <div className={classes.avatarContainer} onClick={props.handleClick}>
-      {props.numberUsers}
-    </div>
-  );
+  return <div className={classes.avatarContainer} onClick={props.handleClick}></div>;
 }

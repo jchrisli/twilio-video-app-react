@@ -10,6 +10,8 @@ import RobotAvatar from './RobotAvatar';
 import sio from '../../../connection/sio';
 import { RemoteParticipant } from 'twilio-video';
 import { useCallback } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import TargetIndicator from './TargetIndicator';
 
 interface MapProps {
   mapParticipantName: string;
@@ -34,6 +36,10 @@ export default function Map({ mapParticipantName }: MapProps) {
   //const mapRef = useRef<HTMLDivElement>(null);
   const [elemWidth, setElemWidth] = useState(0);
   const [elemHeight, setElemHeight] = useState(0);
+  //const [showIndic, setShowIndic] = useState(false);
+  //const showIndicFor = 1.5
+  const [goalX, setGoalX] = useState(0);
+  const [goalY, setGoalY] = useState(0);
 
   //let mapParticipant;
   // Find the map participant based on name
@@ -65,6 +71,7 @@ export default function Map({ mapParticipantName }: MapProps) {
   const mainFrameOnClick = function(e: React.MouseEvent) {
     e.preventDefault();
     const bb = e.currentTarget.getBoundingClientRect();
+
     let clickMsg = {
       x: e.clientX - bb.left,
       y: e.clientY - bb.top,
@@ -75,6 +82,10 @@ export default function Map({ mapParticipantName }: MapProps) {
     };
     console.log(`Clicked ${clickMsg.x} ${clickMsg.y} on ${clickMsg.w} and ${clickMsg.h}`);
     sio.emit('robot-go', clickMsg);
+
+    // Is it safe to update states in a regular callback? Does it use a stale closure?
+    setGoalX(e.clientX - bb.left);
+    setGoalY(e.clientY - bb.top);
   };
 
   const onClickRobot = function(localUserName: string, robotId: number, e: React.MouseEvent) {
@@ -103,6 +114,7 @@ export default function Map({ mapParticipantName }: MapProps) {
           key={r.id}
         />
       ))}
+      <TargetIndicator x={goalX} y={goalY}></TargetIndicator>
     </div>
   ) : null;
 }
