@@ -64,8 +64,6 @@ export default function ParticipantList() {
         <div className={classes.innerScrollContainer}>
           {participants.map(participant => {
             const isSelected = participant === selectedParticipant;
-            const hideParticipant =
-              participant === mainParticipant && participant !== screenShareParticipant && !isSelected;
             const display =
               (isMobile && !participant.identity.startsWith('mobile')) ||
               (!isMobile && participant.identity.startsWith('mobile'));
@@ -76,12 +74,10 @@ export default function ParticipantList() {
                   participant={participant}
                   isSelected={participant === selectedParticipant}
                   onClick={() => setSelectedParticipant(participant)}
-                  hideParticipant={hideParticipant}
                 />
               );
             }
           })}
-          )}
         </div>
       </div>
     </aside>
