@@ -1,20 +1,39 @@
 import React, { useState } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
 //import usePublications from '../../../hooks/usePublications/usePublications';
 import ParticipantTracks from '../../ParticipantTracks/ParticipantTracks';
+import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import RobotAvatar from './RobotAvatar';
 
 // Asteroids
 import sio from '../../../connection/sio';
 import { RemoteParticipant } from 'twilio-video';
+import { useCallback } from 'react';
 
 interface MapProps {
   mapParticipantName: string;
 }
 
+// This will probably be moved to something like useRobots
+interface Robot {
+  id: number;
+  x: number;
+  y: number;
+  heading: number;
+  users: string[]; // first user is always the controller
+}
+
 export default function Map({ mapParticipantName }: MapProps) {
   const participants = useParticipants();
   const [mapParticipant, setMapParticipant] = useState<RemoteParticipant | null>(null);
+  // Start with no robots
+  const [robots, setRobots] = useState<Robot[]>([]);
+  const { room } = useVideoContext();
+  const localName = room!.localParticipant.identity;
+  //const mapRef = useRef<HTMLDivElement>(null);
+  const [elemWidth, setElemWidth] = useState(0);
+  const [elemHeight, setElemHeight] = useState(0);
 
   //let mapParticipant;
   // Find the map participant based on name
@@ -22,27 +41,68 @@ export default function Map({ mapParticipantName }: MapProps) {
     const mapParticpants = participants.filter(p => p.identity === mapParticipantName);
     if (participants.length > 0) {
       setMapParticipant(mapParticpants[0]);
+      //console.log('Setting map participant');
     }
   }, [participants, mapParticipantName]);
 
+  // Register Socket.io event handlers. This map component should only render once anyway
+  useEffect(() => {
+    sio.on('robot-update', data => {
+      setRobots(data);
+    });
+  }, []);
+
+  // See https://stackoverflow.com/questions/60476155/is-it-safe-to-use-ref-current-as-useeffects-dependency-when-ref-points-to-a-dom
+  const measureMap = useCallback(e => {
+    if (e !== null) {
+      setElemWidth(e.clientWidth);
+      //setElemHeight(e.clientHeight);
+      setElemHeight((e.clientWidth / 16.0) * 9.0); // TODO: so this is a hack (and not accurate). Use a ResizeObserver later
+      //console.log(`Setting element width and height to be ${e.clientWidth} and ${e.clientHeight}`);
+    }
+  }, []);
+
   const mainFrameOnClick = function(e: React.MouseEvent) {
+    e.preventDefault();
+    const bb = e.currentTarget.getBoundingClientRect();
     let clickMsg = {
-      x: e.clientX,
-      y: e.clientY,
-      w: (e.target as Element).clientWidth,
-      h: (e.target as Element).clientHeight,
+      x: e.clientX - bb.left,
+      y: e.clientY - bb.top,
+      w: (e.currentTarget as Element).clientWidth,
+      h: (e.currentTarget as Element).clientHeight,
+      heading: 3.1416 / 2,
+      username: localName,
     };
     console.log(`Clicked ${clickMsg.x} ${clickMsg.y} on ${clickMsg.w} and ${clickMsg.h}`);
-    sio.emit('pinpoint', clickMsg);
+    sio.emit('robot-go', clickMsg);
+  };
+
+  const onClickRobot = function(localUserName: string, robotId: number, e: React.MouseEvent) {
+    console.log(`${localUserName} clicked on robot ${robotId}`);
+    const selectMsg = {
+      username: localName,
+      id: robotId,
+    };
+    sio.emit('robot-select', selectMsg);
+    e.stopPropagation(); // Prevent the event from going to the map element
   };
 
   // return null if no map participant?
   return mapParticipant ? (
-    <div onClick={mainFrameOnClick}>
+    <div onClick={mainFrameOnClick} ref={measureMap} style={{ position: 'relative' }}>
       <ParticipantTracks participant={mapParticipant} />
+      {robots.map(r => (
+        <RobotAvatar
+          id={r.id}
+          x={(r.x / 1280.0) * elemWidth}
+          y={(r.y / 720.0) * elemHeight}
+          hasControl={r.users.length > 0 && r.users[0] === localName}
+          numberUsers={r.users.length}
+          on={r.users.indexOf(localName) !== -1}
+          handleClick={onClickRobot.bind(null, localName, r.id)}
+          key={r.id}
+        />
+      ))}
     </div>
-  ) : //videoOnly={videoOnly}
-  //enableScreenShare={enableScreenShare}
-  //isLocalParticipant={isLocalParticipant}
-  null;
+  ) : null;
 }
