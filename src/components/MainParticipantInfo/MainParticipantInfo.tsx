@@ -13,7 +13,6 @@ import useIsRecording from '../../hooks/useIsRecording/useIsRecording';
 import useIsTrackSwitchedOff from '../../hooks/useIsTrackSwitchedOff/useIsTrackSwitchedOff';
 import useParticipantIsReconnecting from '../../hooks/useParticipantIsReconnecting/useParticipantIsReconnecting';
 import usePublications from '../../hooks/usePublications/usePublications';
-import useScreenShareParticipant from '../../hooks/useScreenShareParticipant/useScreenShareParticipant';
 import useTrack from '../../hooks/useTrack/useTrack';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
@@ -121,14 +120,12 @@ export default function MainParticipantInfo({ participant, children }: MainParti
   const localParticipant = room!.localParticipant;
   const isLocal = localParticipant === participant;
 
-  const screenShareParticipant = useScreenShareParticipant();
-  const isRemoteParticipantScreenSharing = screenShareParticipant && screenShareParticipant !== localParticipant;
+  const isRemoteParticipantScreenSharing = false;
 
   const publications = usePublications(participant);
   const videoPublication = publications.find(p => p.trackName.includes('camera'));
-  const screenSharePublication = publications.find(p => p.trackName.includes('screen'));
 
-  const videoTrack = useTrack(screenSharePublication || videoPublication);
+  const videoTrack = useTrack(videoPublication);
   const isVideoEnabled = Boolean(videoTrack);
 
   const audioPublication = publications.find(p => p.kind === 'audio');
@@ -154,7 +151,6 @@ export default function MainParticipantInfo({ participant, children }: MainParti
             <Typography variant="body1" color="inherit">
               {participant.identity}
               {isLocal && ' (You)'}
-              {screenSharePublication && ' - Screen'}
             </Typography>
           </div>
           <NetworkQualityLevel participant={localParticipant} />

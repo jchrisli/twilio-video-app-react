@@ -6,7 +6,6 @@ import useMainParticipant from '../../hooks/useMainParticipant/useMainParticipan
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
-import useScreenShareParticipant from '../../hooks/useScreenShareParticipant/useScreenShareParticipant';
 import { isMobile } from '../../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,9 +47,8 @@ export default function ParticipantList() {
   const localParticipant = room!.localParticipant;
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
-  const screenShareParticipant = useScreenShareParticipant();
   const mainParticipant = useMainParticipant();
-  const isRemoteParticipantScreenSharing = screenShareParticipant && screenShareParticipant !== localParticipant;
+  const isRemoteParticipantScreenSharing = false;
 
   if (participants.length === 0) return null; // Don't render this component if there are no remote participants.
 
@@ -64,8 +62,6 @@ export default function ParticipantList() {
         <div className={classes.innerScrollContainer}>
           {participants.map(participant => {
             const isSelected = participant === selectedParticipant;
-            const hideParticipant =
-              participant === mainParticipant && participant !== screenShareParticipant && !isSelected;
             const display =
               (isMobile && !participant.identity.startsWith('mobile')) ||
               (!isMobile && participant.identity.startsWith('mobile'));
@@ -76,12 +72,10 @@ export default function ParticipantList() {
                   participant={participant}
                   isSelected={participant === selectedParticipant}
                   onClick={() => setSelectedParticipant(participant)}
-                  hideParticipant={hideParticipant}
                 />
               );
             }
           })}
-          )}
         </div>
       </div>
     </aside>

@@ -12,10 +12,8 @@ const mockUseAppState = useAppState as jest.Mock<any>;
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
 
 const mockConnect = jest.fn();
-const mockChatConnect = jest.fn(() => Promise.resolve());
 const mockGetToken = jest.fn(() => Promise.resolve({ token: 'mockToken' }));
 
-jest.mock('../../../hooks/useChatContext/useChatContext', () => () => ({ connect: mockChatConnect }));
 jest.mock('../../../hooks/useVideoContext/useVideoContext');
 jest.mock('../../../state');
 
@@ -117,7 +115,6 @@ describe('the DeviceSelectionScreen component', () => {
     expect(mockGetToken).toHaveBeenCalledWith('test name', 'test room name');
     setImmediate(() => {
       expect(mockConnect).toHaveBeenCalledWith('mockToken');
-      expect(mockChatConnect).toHaveBeenCalledWith('mockToken');
       done();
     });
   });
@@ -130,7 +127,6 @@ describe('the DeviceSelectionScreen component', () => {
     expect(mockGetToken).toHaveBeenCalledWith('test name', 'test room name');
     setImmediate(() => {
       expect(mockConnect).toHaveBeenCalledWith('mockToken');
-      expect(mockChatConnect).not.toHaveBeenCalledWith('mockToken');
       done();
     });
   });

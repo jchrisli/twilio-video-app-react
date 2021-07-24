@@ -25,7 +25,6 @@ The `clientTrackSwitchOffControl` and `contentPreferencesMode` settings allow fo
 
 ### Bugfixes
 
-- The appearance of the text input field in the chat window has been improved in Firefox. [#512](https://github.com/twilio/twilio-video-app-react/pull/512).
 - Fix automatic audio track restart in Firefox. [#507](https://github.com/twilio/twilio-video-app-react/pull/507)
 - Fix issue related to the selection of video input devices when the app runs for the first time. [#508](https://github.com/twilio/twilio-video-app-react/pull/508)
 - Display network quality meter for main participant. [#499](https://github.com/twilio/twilio-video-app-react/pull/499)
@@ -41,12 +40,6 @@ The `clientTrackSwitchOffControl` and `contentPreferencesMode` settings allow fo
 - User can now be heard by other participants after their audio input device is removed. [#487](https://github.com/twilio/twilio-video-app-react/pull/487)
 - Added missing `trackSwitchOffMode` to `connectionOptions` object in `useConnectionOptions` hook. [#488](https://github.com/twilio/twilio-video-app-react/pull/488)
 - Removed preflight test from app. [#489](https://github.com/twilio/twilio-video-app-react/pull/489)
-
-## 0.3.0 (March 31, 2021)
-
-### New Feature
-
-- This release adds an in-room chat feature. This chat feature allows users to send and receive textual messages and files while connected to a Twilio Video room. This feature is powered by the [Twilio Conversations API](https://www.twilio.com/conversations-api). For more information, please see this [blog post](https://www.twilio.com/blog/open-source-video-chat-app-reactjs-conversations-api).
 
 ## 0.2.4 (March 23, 2021)
 

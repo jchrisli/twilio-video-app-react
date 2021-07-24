@@ -9,9 +9,7 @@ import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Typography, Grid, Hidden } from '@material-ui/core';
 import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
-import ToggleChatButton from '../Buttons/ToggleChatButton/ToggleChatButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
-import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,29 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: 0,
       },
     },
-    screenShareBanner: {
-      position: 'fixed',
-      zIndex: 8,
-      bottom: `${theme.footerHeight}px`,
-      left: 0,
-      right: 0,
-      height: '104px',
-      background: 'rgba(0, 0, 0, 0.5)',
-      '& h6': {
-        color: 'white',
-      },
-      '& button': {
-        background: 'white',
-        color: theme.brand,
-        border: `2px solid ${theme.brand}`,
-        margin: '0 2em',
-        '&:hover': {
-          color: '#600101',
-          border: `2px solid #600101`,
-          background: '#FFE9E7',
-        },
-      },
-    },
+
     hideMobile: {
       display: 'initial',
       [theme.breakpoints.down('sm')]: {
@@ -64,19 +40,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MenuBar() {
   const classes = useStyles();
-  const { isSharingScreen, toggleScreenShare } = useVideoContext();
   const roomState = useRoomState();
   const isReconnecting = roomState === 'reconnecting';
   const { room } = useVideoContext();
 
   return (
     <>
-      {isSharingScreen && (
-        <Grid container justify="center" alignItems="center" className={classes.screenShareBanner}>
-          <Typography variant="h6">You are sharing your screen</Typography>
-          <Button onClick={() => toggleScreenShare()}>Stop Sharing</Button>
-        </Grid>
-      )}
       <footer className={classes.container}>
         <Grid container justify="space-around" alignItems="center">
           <Hidden smDown>
@@ -88,8 +57,6 @@ export default function MenuBar() {
             <Grid container justify="center">
               <ToggleAudioButton disabled={isReconnecting} />
               <ToggleVideoButton disabled={isReconnecting} />
-              {!isSharingScreen && !isMobile && <ToggleScreenShareButton disabled={isReconnecting} />}
-              {process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true' && <ToggleChatButton />}
             </Grid>
           </Grid>
           <Hidden smDown>

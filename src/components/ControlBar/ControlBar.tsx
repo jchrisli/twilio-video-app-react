@@ -28,16 +28,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// In this component, we are toggling the visibility of the ChatWindow with CSS instead of
-// conditionally rendering the component in the DOM. This is done so that the ChatWindow is
-// not unmounted while a file upload is in progress.
-
 export default function ControlBar() {
   const classes = useStyles();
-  //const { isChatWindowOpen, messages, conversation } = useChatContext();
 
   return (
-    //<aside className={clsx(classes.chatWindowContainer, { [classes.hide]: !isChatWindowOpen })}>
     <aside className={clsx(classes.controlBarContainer)}>
       <Map mapParticipantName={'map'}></Map>
     </aside>
