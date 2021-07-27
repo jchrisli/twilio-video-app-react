@@ -45,7 +45,7 @@ export default function Menu(props: { buttonClassName?: string }) {
         data-cy-more-button
       >
         {isMobile ? (
-          <MoreIcon />
+          <div />
         ) : (
           <>
             More
