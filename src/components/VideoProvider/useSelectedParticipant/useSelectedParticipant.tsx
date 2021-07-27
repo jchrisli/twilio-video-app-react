@@ -1,13 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Participant, Room } from 'twilio-video';
 
-type selectedParticipantContextType = [Participant | null, (participant: Participant) => void];
+// Add preview participant
+type selectedParticipantContextType = [
+  Participant | null,
+  (participant: Participant) => void,
+  string | null,
+  (participantName: string) => void
+];
 
 export const selectedParticipantContext = createContext<selectedParticipantContextType>(null!);
 
 export default function useSelectedParticipant() {
-  const [selectedParticipant, setSelectedParticipant] = useContext(selectedParticipantContext);
-  return [selectedParticipant, setSelectedParticipant] as const;
+  const [selectedParticipant, setSelectedParticipant, previewParticipant, setPreviewParticpant] = useContext(
+    selectedParticipantContext
+  );
+  return [selectedParticipant, setSelectedParticipant, previewParticipant, setPreviewParticpant] as const;
 }
 
 type SelectedParticipantProviderProps = {
@@ -20,11 +28,22 @@ export function SelectedParticipantProvider({ room, children }: SelectedParticip
   const setSelectedParticipant = (participant: Participant) =>
     _setSelectedParticipant(prevParticipant => (prevParticipant === participant ? null : participant));
 
+  const [previewParticipant, setPreviewParticipant] = useState<string | null>(null);
+  //const setPreviewParticipant = (participant: Participant) =>
+  //  _setSelectedParticipant(prevParticipant => (prevParticipant === participant ? null : participant));
+
   useEffect(() => {
     if (room) {
-      const onDisconnect = () => _setSelectedParticipant(null);
-      const handleParticipantDisconnected = (participant: Participant) =>
+      const onDisconnect = () => {
+        _setSelectedParticipant(null);
+        setPreviewParticipant(null);
+      };
+      const handleParticipantDisconnected = (participant: Participant) => {
         _setSelectedParticipant(prevParticipant => (prevParticipant === participant ? null : prevParticipant));
+        setPreviewParticipant(prevParticipantName =>
+          prevParticipantName === participant.identity ? null : prevParticipantName
+        );
+      };
 
       room.on('disconnected', onDisconnect);
       room.on('participantDisconnected', handleParticipantDisconnected);
@@ -36,7 +55,9 @@ export function SelectedParticipantProvider({ room, children }: SelectedParticip
   }, [room]);
 
   return (
-    <selectedParticipantContext.Provider value={[selectedParticipant, setSelectedParticipant]}>
+    <selectedParticipantContext.Provider
+      value={[selectedParticipant, setSelectedParticipant, previewParticipant, setPreviewParticipant]}
+    >
       {children}
     </selectedParticipantContext.Provider>
   );

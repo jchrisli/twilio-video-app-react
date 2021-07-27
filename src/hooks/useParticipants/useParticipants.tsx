@@ -11,14 +11,16 @@ export default function useParticipants() {
   // When the dominant speaker changes, they are moved to the front of the participants array.
   // This means that the most recent dominant speakers will always be near the top of the
   // ParticipantStrip component.
-  useEffect(() => {
-    if (dominantSpeaker) {
-      setParticipants(prevParticipants => [
-        dominantSpeaker,
-        ...prevParticipants.filter(participant => participant !== dominantSpeaker),
-      ]);
-    }
-  }, [dominantSpeaker]);
+
+  // Disable this behavior as it is unclear for us what a dominant speaker means
+  //useEffect(() => {
+  //if (dominantSpeaker) {
+  //setParticipants(prevParticipants => [
+  //dominantSpeaker,
+  //...prevParticipants.filter(participant => participant !== dominantSpeaker),
+  //]);
+  //}
+  //}, [dominantSpeaker]);
 
   useEffect(() => {
     if (room) {

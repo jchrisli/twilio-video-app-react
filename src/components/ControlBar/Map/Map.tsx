@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useEffect, useRef } from 'react';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
+import useSelectedParticipant from '../../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 //import usePublications from '../../../hooks/usePublications/usePublications';
 import ParticipantTracks from '../../ParticipantTracks/ParticipantTracks';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
@@ -36,10 +37,15 @@ export default function Map({ mapParticipantName }: MapProps) {
   //const mapRef = useRef<HTMLDivElement>(null);
   const [elemWidth, setElemWidth] = useState(0);
   const [elemHeight, setElemHeight] = useState(0);
-  //const [showIndic, setShowIndic] = useState(false);
-  //const showIndicFor = 1.5
   const [goalX, setGoalX] = useState(0);
   const [goalY, setGoalY] = useState(0);
+  // TODO: find out if using this hook for the 2nd time (already used in ParticipantList) would cause issues
+  const [
+    selectedParticipant,
+    setSelectedParticipant,
+    previewParticipant,
+    setPreviewParticipant,
+  ] = useSelectedParticipant();
 
   //let mapParticipant;
   // Find the map participant based on name
@@ -95,6 +101,15 @@ export default function Map({ mapParticipantName }: MapProps) {
       id: robotId,
     };
     sio.emit('robot-select', selectMsg);
+
+    // select the video stream the robot delivers by matching participant name (mobile<id>) and robot id
+    // Would this particpant be stale value from last render run?
+    const selectedFromRobot = participants.filter(p => p.identity === `mobile${robotId}`);
+    if (selectedFromRobot.length > 0) {
+      setSelectedParticipant(selectedFromRobot[0]);
+      //console.log('Setting map participant');
+    }
+
     e.stopPropagation(); // Prevent the event from going to the map element
   };
 
