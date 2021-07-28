@@ -1,9 +1,7 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
 import EndCallButton from '../Buttons/EndCallButton/EndCallButton';
-import { isMobile } from '../../utils';
 import Menu from './Menu/Menu';
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';

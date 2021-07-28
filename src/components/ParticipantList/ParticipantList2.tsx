@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     scrollContainer: {
       display: 'flex',
-      justifyContent: isMobile ? 'default' : 'center',
+      justifyContent: 'center',
     },
     innerScrollContainer: {
       width: `calc(${theme.sidebarWidth}px - 3em)`,
@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: `${theme.sidebarMobilePadding}px`,
         display: 'flex',
       },
-      columns: isMobile ? '2 auto' : 'default',
     },
   })
 );
@@ -61,7 +60,7 @@ export default function ParticipantList() {
     >
       <div className={classes.scrollContainer}>
         <div className={classes.innerScrollContainer}>
-          {participants.map(participant => {
+          {participants.slice(Math.floor(participants.length / 2)).map(participant => {
             const isSelected = participant === selectedParticipant;
             const display =
               (isMobile && !participant.identity.startsWith('mobile')) ||
