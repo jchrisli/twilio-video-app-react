@@ -62,7 +62,29 @@ export default function Map({ mapParticipantName }: MapProps) {
     sio.on('robot-update', data => {
       setRobots(data);
     });
+    return () => {
+      sio.close();
+    };
   }, []);
+
+  useEffect(() => {
+    let i = 0;
+    // Find the robot the local user is on
+    for (; i < robots.length; i++) {
+      if (robots[i].users.indexOf(localName) !== -1) {
+        const robotId = robots[i].id;
+        const selectedFromRobot = participants.filter(p => p.identity === `mobile${robotId}`);
+        console.log(`selectedFromRobot length ${selectedFromRobot.length}`);
+        console.log(`participants length ${participants.length}`);
+        if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
+          console.log(`Current selectedParticipant is ${selectedParticipant ? selectedParticipant?.identity : 'null'}`);
+          setSelectedParticipant(selectedFromRobot[0]);
+          console.log(`Setting selected participant ${selectedFromRobot[0].identity}`);
+        }
+        break;
+      }
+    }
+  }, [participants, robots]);
 
   // See https://stackoverflow.com/questions/60476155/is-it-safe-to-use-ref-current-as-useeffects-dependency-when-ref-points-to-a-dom
   const measureMap = useCallback(e => {
