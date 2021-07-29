@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 export default function Room() {
   const classes = useStyles();
-  if (!isMobile) {
+  if (isMobile) {
     return (
       <div className={clsx(classes.containerMobile)}>
         <ParticipantList />
