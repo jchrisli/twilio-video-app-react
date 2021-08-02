@@ -11,8 +11,14 @@ import RobotAvatar from './RobotAvatar';
 import sio from '../../../connection/sio';
 import { RemoteParticipant } from 'twilio-video';
 import { useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import TargetIndicator from './TargetIndicator';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+import { styled } from '@material-ui/core';
+import TurnLeft from '../../../icons/TurnLeft';
+import TurnRight from '../../../icons/TurnRight';
+import GoForward from '../../../icons/GoForward';
+import GoBackwards from '../../../icons/GoBackwards';
 
 interface MapProps {
   mapParticipantName: string;
@@ -27,6 +33,32 @@ interface Robot {
   users: string[]; // first user is always the controller
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    containerItem: {
+      display: 'flex',
+      justifyContent: 'center',
+      // flexGrow:1,
+      // alignItems: 'stretch',
+      width: '25%',
+      height: '25%',
+      aspectRatio: '1',
+      padding: '6px',
+    },
+  })
+);
+
+export const IconContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'center',
+  // flexGrow:1,
+  // alignItems: 'stretch',
+
+  padding: '6px',
+  // resizeMode: 'contain'
+  // marginRight: '0.3em',
+});
+
 export default function Map({ mapParticipantName }: MapProps) {
   const participants = useParticipants();
   const [mapParticipant, setMapParticipant] = useState<RemoteParticipant | null>(null);
@@ -39,6 +71,9 @@ export default function Map({ mapParticipantName }: MapProps) {
   const [elemHeight, setElemHeight] = useState(0);
   const [goalX, setGoalX] = useState(0);
   const [goalY, setGoalY] = useState(0);
+  var currentRobot: Robot;
+
+  const classes = useStyles();
   // TODO: find out if using this hook for the 2nd time (already used in ParticipantList) would cause issues
   const [
     selectedParticipant,
@@ -78,6 +113,7 @@ export default function Map({ mapParticipantName }: MapProps) {
         console.log(`participants length ${participants.length}`);
         if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
           console.log(`Current selectedParticipant is ${selectedParticipant ? selectedParticipant?.identity : 'null'}`);
+          currentRobot = robots[i];
           setSelectedParticipant(selectedFromRobot[0]);
           console.log(`Setting selected participant ${selectedFromRobot[0].identity}`);
         }
@@ -135,23 +171,74 @@ export default function Map({ mapParticipantName }: MapProps) {
     e.stopPropagation(); // Prevent the event from going to the map element
   };
 
+  const onClickLeft = (e: React.MouseEvent) => {
+    console.log('Turn left');
+  };
+
+  const onClickRight = (e: React.MouseEvent) => {
+    console.log('Turn right');
+  };
+
+  const onClickUp = (e: React.MouseEvent) => {
+    console.log('Go forward');
+    e.preventDefault();
+    const bb = e.currentTarget.getBoundingClientRect();
+
+    let clickMsg = {
+      x: e.clientX,
+      y: e.clientY + 10,
+      w: 0,
+      h: (e.currentTarget as Element).clientHeight,
+      heading: 3.1416 / 2,
+      username: localName,
+    };
+    sio.emit('robot-go', clickMsg);
+
+    // Is it safe to update states in a regular callback? Does it use a stale closure?
+    setGoalX(e.clientX);
+    setGoalY(e.clientY - bb.right);
+  };
+
+  const onClickDown = (e: React.MouseEvent) => {
+    console.log('Go backwards');
+  };
+
   // return null if no map participant?
   return mapParticipant ? (
-    <div onClick={mainFrameOnClick} ref={measureMap} style={{ position: 'relative' }}>
-      <ParticipantTracks participant={mapParticipant} />
-      {robots.map(r => (
-        <RobotAvatar
-          id={r.id}
-          x={(r.x / 1280.0) * elemWidth}
-          y={(r.y / 720.0) * elemHeight}
-          hasControl={r.users.length > 0 && r.users[0] === localName}
-          numberUsers={r.users.length}
-          on={r.users.indexOf(localName) !== -1}
-          handleClick={onClickRobot.bind(null, localName, r.id)}
-          key={r.id}
-        />
-      ))}
-      <TargetIndicator x={goalX} y={goalY}></TargetIndicator>
+    <div>
+      <div onClick={mainFrameOnClick} ref={measureMap} style={{ position: 'relative' }}>
+        <ParticipantTracks participant={mapParticipant} />
+        <IconContainer>
+          <div className={classes.containerItem} onClick={onClickUp}>
+            <GoForward />
+          </div>
+        </IconContainer>
+        <IconContainer>
+          <div className={classes.containerItem} onClick={onClickLeft}>
+            <TurnLeft />
+          </div>
+          <div className={classes.containerItem} onClick={onClickDown}>
+            <GoBackwards />
+          </div>
+          <div className={classes.containerItem} onClick={onClickRight}>
+            <TurnRight />
+          </div>
+        </IconContainer>
+        {robots.map(r => (
+          <RobotAvatar
+            id={r.id}
+            x={(r.x / 1280.0) * elemWidth}
+            y={(r.y / 720.0) * elemHeight}
+            hasControl={r.users.length > 0 && r.users[0] === localName}
+            numberUsers={r.users.length}
+            on={r.users.indexOf(localName) !== -1}
+            handleClick={onClickRobot.bind(null, localName, r.id)}
+            key={r.id}
+          />
+        ))}
+        <TargetIndicator x={goalX} y={goalY}></TargetIndicator>
+      </div>
+      <div />
     </div>
   ) : null;
 }
