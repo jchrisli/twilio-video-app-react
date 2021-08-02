@@ -52,6 +52,7 @@ export default function Room() {
       <div className={clsx(classes.container)}>
         <MainParticipant />
         <ParticipantList />
+        <ControlBar />
       </div>
     );
   }
