@@ -7,6 +7,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import { isMobile } from '../../utils';
+import { isClassExpression } from 'typescript';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     scrollContainer: {
       display: 'flex',
-      justifyContent: isMobile ? 'default' : 'center',
+      justifyContent: 'center',
     },
     innerScrollContainer: {
       width: `calc(${theme.sidebarWidth}px - 3em)`,
@@ -36,8 +37,13 @@ const useStyles = makeStyles((theme: Theme) =>
         width: 'auto',
         padding: `${theme.sidebarMobilePadding}px`,
         display: 'flex',
+        flexWrap: isMobile ? 'wrap' : `default`,
+        justifyContent: 'center',
       },
       columns: isMobile ? '2 auto' : 'default',
+    },
+    containerItem: {
+      padding: isMobile ? '4px' : `default`,
     },
   })
 );
@@ -68,12 +74,14 @@ export default function ParticipantList() {
               (!isMobile && participant.identity.startsWith('mobile'));
             if (display) {
               return (
-                <Participant
-                  key={participant.sid}
-                  participant={participant}
-                  isSelected={participant === selectedParticipant}
-                  onClick={() => setSelectedParticipant(participant)}
-                />
+                <div className={classes.containerItem}>
+                  <Participant
+                    key={participant.sid}
+                    participant={participant}
+                    isSelected={participant === selectedParticipant}
+                    onClick={() => setSelectedParticipant(participant)}
+                  />
+                </div>
               );
             }
           })}
