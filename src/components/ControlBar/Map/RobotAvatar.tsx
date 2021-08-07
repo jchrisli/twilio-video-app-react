@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { isClassExpression } from 'typescript';
 //import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 
 interface RobotAvatarProps {
@@ -30,10 +31,21 @@ const useStyles = makeStyles({
       textAlign: 'center',
     };
   },
-  // bar: {
-  //   // CSS property
-  //   color: props => props.color,
-  // },
+  headingLine: (props: RobotAvatarProps) => {
+    const length = 25;
+    return {
+      position: 'absolute',
+      backgroundColor: props.hasControl ? '#9acd32' : props.on ? '#eb6534' : '#888', // Green if has control, blue if on the robot, grey otherwise
+      left: `${props.x}px`,
+      top: `${props.y}px`,
+      height: '3px',
+      width: `${length}px`,
+      transformOrigin: 'top left',
+      transform: `rotate(${props.heading}rad)`,
+    };
+    //   // CSS property
+    //   color: props => props.color,
+  },
 });
 
 export default function RobotAvatar(props: RobotAvatarProps) {
@@ -42,5 +54,10 @@ export default function RobotAvatar(props: RobotAvatarProps) {
   // const localName = room!.localParticipant.identity;
   const classes = useStyles(props);
 
-  return <div className={classes.avatarContainer} onClick={props.handleClick}></div>;
+  return (
+    <>
+      <div className={classes.avatarContainer} onClick={props.handleClick}></div>
+      <div className={classes.headingLine}></div>
+    </>
+  );
 }

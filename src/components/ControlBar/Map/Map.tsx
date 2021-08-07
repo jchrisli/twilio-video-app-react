@@ -109,13 +109,13 @@ export default function Map({ mapParticipantName }: MapProps) {
       if (robots[i].users.indexOf(localName) !== -1) {
         const robotId = robots[i].id;
         const selectedFromRobot = participants.filter(p => p.identity === `mobile${robotId}`);
-        console.log(`selectedFromRobot length ${selectedFromRobot.length}`);
-        console.log(`participants length ${participants.length}`);
+        //console.log(`selectedFromRobot length ${selectedFromRobot.length}`);
+        //console.log(`participants length ${participants.length}`);
         if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
-          console.log(`Current selectedParticipant is ${selectedParticipant ? selectedParticipant?.identity : 'null'}`);
+          //console.log(`Current selectedParticipant is ${selectedParticipant ? selectedParticipant?.identity : 'null'}`);
           currentRobot = robots[i];
           setSelectedParticipant(selectedFromRobot[0]);
-          console.log(`Setting selected participant ${selectedFromRobot[0].identity}`);
+          //console.log(`Setting selected participant ${selectedFromRobot[0].identity}`);
         }
         break;
       }
@@ -181,22 +181,22 @@ export default function Map({ mapParticipantName }: MapProps) {
 
   const onClickUp = (e: React.MouseEvent) => {
     console.log('Go forward');
-    e.preventDefault();
-    const bb = e.currentTarget.getBoundingClientRect();
+    //e.preventDefault();
+    //const bb = e.currentTarget.getBoundingClientRect();
 
-    let clickMsg = {
-      x: e.clientX,
-      y: e.clientY + 10,
-      w: 0,
-      h: (e.currentTarget as Element).clientHeight,
-      heading: 3.1416 / 2,
-      username: localName,
-    };
-    sio.emit('robot-go', clickMsg);
+    //let clickMsg = {
+    //x: e.clientX,
+    //y: e.clientY + 10,
+    //w: 0,
+    //h: (e.currentTarget as Element).clientHeight,
+    //heading: 3.1416 / 2,
+    //username: localName,
+    //};
+    //sio.emit('robot-go', clickMsg);
 
-    // Is it safe to update states in a regular callback? Does it use a stale closure?
-    setGoalX(e.clientX);
-    setGoalY(e.clientY - bb.right);
+    //// Is it safe to update states in a regular callback? Does it use a stale closure?
+    //setGoalX(e.clientX);
+    //setGoalY(e.clientY - bb.right);
   };
 
   const onClickDown = (e: React.MouseEvent) => {
@@ -229,6 +229,7 @@ export default function Map({ mapParticipantName }: MapProps) {
             id={r.id}
             x={(r.x / 1280.0) * elemWidth}
             y={(r.y / 720.0) * elemHeight}
+            heading={r.heading}
             hasControl={r.users.length > 0 && r.users[0] === localName}
             numberUsers={r.users.length}
             on={r.users.indexOf(localName) !== -1}
