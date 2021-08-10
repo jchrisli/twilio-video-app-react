@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         display: isMobile ? 'flex' : `default`,
         flexDirection: 'column-reverse',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
       },
     },
     scrollContainer: {
@@ -69,7 +69,7 @@ export default function ParticipantList() {
   const mainParticipant = useMainParticipant();
   const isRemoteParticipantScreenSharing = false;
 
-  if (participants.length === 1) return null; // Don't render this component if there are no remote participants.
+  if (participants.length === 0) return null; // Don't render this component if there are no remote participants.
 
   return (
     <aside
@@ -81,10 +81,7 @@ export default function ParticipantList() {
         <div className={classes.localContainer}>
           <Participant participant={localParticipant} isLocalParticipant={true} />
         </div>
-        <div
-          className={classes.localContainer}
-          style={{ borderTop: '2px solid #ffff00 ', marginLeft: 20, marginRight: 20 }}
-        ></div>
+        <div className={classes.localContainer} style={{ borderTop: '2px solid #ffff00 ' }}></div>
         <div className={classes.scrollContainer}>
           <div className={classes.innerScrollContainer}>
             {participants.map(participant => {
