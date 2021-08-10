@@ -8,6 +8,8 @@ import MainParticipant from '../MainParticipant/MainParticipant';
 import ControlBar from '../ControlBar/ControlBar';
 import { isMobile } from '../../utils';
 import { AutorenewTwoTone } from '@material-ui/icons';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import Participant from '../Participant/Participant';
 
 const useStyles = makeStyles((theme: Theme) => {
   const totalMobileSidebarHeight = `${theme.sidebarMobileHeight +
@@ -31,20 +33,28 @@ const useStyles = makeStyles((theme: Theme) => {
       position: 'relative',
       // height: '100%',
       display: 'grid',
-      alignItems: 'center',
+      justifyContent: 'center',
       // gridTemplateColumns: `repeat(auto-fit, minmax(100px, 2fr))` ,
       // gridTemplateRows: '100%',
-      columns: '2 auto',
+      // columns: '2 auto',
     },
   };
 });
 
 export default function Room() {
+  const { room } = useVideoContext();
+  const localParticipant = room!.localParticipant;
   const classes = useStyles();
   if (isMobile) {
     return (
-      <div className={clsx(classes.containerMobile)}>
-        <ParticipantList />
+      <div>
+        <div className={clsx(classes.containerMobile)}>
+          <ParticipantList />
+        </div>
+        <div style={{ borderTop: '2px solid #ffff00 ' }}></div>
+        <div className={clsx(classes.containerMobile)}>
+          <Participant participant={localParticipant} isLocalParticipant={true} />
+        </div>
       </div>
     );
   } else {

@@ -26,21 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
     transparentBackground: {
       background: 'transparent',
     },
-    superContainer: {
-      [theme.breakpoints.down('sm')]: {
-        display: isMobile ? 'flex' : `default`,
-        flexDirection: 'column-reverse',
-        justifyContent: 'center',
-      },
-    },
+
     scrollContainer: {
       display: 'flex',
       justifyContent: 'center',
-    },
-    localContainer: {
-      display: isMobile ? 'flex' : 'none',
-      justifyContent: 'center',
-      padding: '4px',
     },
     innerScrollContainer: {
       width: isMobile ? `calc(${theme.sidebarWidth}px)` : `calc(${theme.sidebarWidth}px - 3em)`,
@@ -77,32 +66,26 @@ export default function ParticipantList() {
         [classes.transparentBackground]: !isRemoteParticipantScreenSharing,
       })}
     >
-      <div className={classes.superContainer}>
-        <div className={classes.localContainer}>
-          <Participant participant={localParticipant} isLocalParticipant={true} />
-        </div>
-        <div className={classes.localContainer} style={{ borderTop: '2px solid #ffff00 ' }}></div>
-        <div className={classes.scrollContainer}>
-          <div className={classes.innerScrollContainer}>
-            {participants.map(participant => {
-              const isSelected = participant === selectedParticipant;
-              const display =
-                (isMobile && !participant.identity.startsWith('mobile')) ||
-                (!isMobile && participant.identity.startsWith('mobile'));
-              if (display) {
-                return (
-                  <div className={classes.containerItem}>
-                    <Participant
-                      key={participant.sid}
-                      participant={participant}
-                      isSelected={participant === selectedParticipant}
-                      onClick={() => setSelectedParticipant(participant)}
-                    />
-                  </div>
-                );
-              }
-            })}
-          </div>
+      <div className={classes.scrollContainer}>
+        <div className={classes.innerScrollContainer}>
+          {participants.map(participant => {
+            const isSelected = participant === selectedParticipant;
+            const display =
+              (isMobile && !participant.identity.startsWith('mobile')) ||
+              (!isMobile && participant.identity.startsWith('mobile'));
+            if (display) {
+              return (
+                <div className={classes.containerItem}>
+                  <Participant
+                    key={participant.sid}
+                    participant={participant}
+                    isSelected={participant === selectedParticipant}
+                    onClick={() => setSelectedParticipant(participant)}
+                  />
+                </div>
+              );
+            }
+          })}
         </div>
       </div>
     </aside>
