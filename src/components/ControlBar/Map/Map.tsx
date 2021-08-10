@@ -208,22 +208,6 @@ export default function Map({ mapParticipantName }: MapProps) {
     <div>
       <div onClick={mainFrameOnClick} ref={measureMap} style={{ position: 'relative' }}>
         <ParticipantTracks participant={mapParticipant} />
-        <IconContainer>
-          <div className={classes.containerItem} onClick={onClickUp}>
-            <GoForward />
-          </div>
-        </IconContainer>
-        <IconContainer>
-          <div className={classes.containerItem} onClick={onClickLeft}>
-            <TurnLeft />
-          </div>
-          <div className={classes.containerItem} onClick={onClickDown}>
-            <GoBackwards />
-          </div>
-          <div className={classes.containerItem} onClick={onClickRight}>
-            <TurnRight />
-          </div>
-        </IconContainer>
         {robots.map(r => (
           <RobotAvatar
             id={r.id}
@@ -239,7 +223,22 @@ export default function Map({ mapParticipantName }: MapProps) {
         ))}
         <TargetIndicator x={goalX} y={goalY}></TargetIndicator>
       </div>
-      <div />
+      <IconContainer>
+        <div className={classes.containerItem} onClick={onClickUp}>
+          <GoForward />
+        </div>
+      </IconContainer>
+      <IconContainer>
+        <div className={classes.containerItem} onClick={onClickLeft}>
+          <TurnLeft />
+        </div>
+        <div className={classes.containerItem} onClick={onClickDown}>
+          <GoBackwards />
+        </div>
+        <div className={classes.containerItem} onClick={onClickRight}>
+          <TurnRight />
+        </div>
+      </IconContainer>
     </div>
   ) : null;
 }
