@@ -31,11 +31,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
     },
     innerScrollContainer: {
-      width: `calc(${theme.sidebarWidth}px - 3em)`,
-      padding: '1.5em 0',
+      width: isMobile ? `calc(${theme.sidebarWidth}px)` : `calc(${theme.sidebarWidth}px - 3em)`,
+      padding: isMobile ? '0px' : '1.5em 0',
       [theme.breakpoints.down('sm')]: {
         width: 'auto',
-        padding: `${theme.sidebarMobilePadding}px`,
+        padding: isMobile ? '0px' : `${theme.sidebarMobilePadding}px`,
         display: 'flex',
         flexWrap: isMobile ? 'wrap' : `default`,
         justifyContent: 'center',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       columns: isMobile ? '2 auto' : 'default',
     },
     containerItem: {
-      padding: isMobile ? '4px' : `default`,
+      padding: isMobile ? '0px' : `default`,
     },
   })
 );
