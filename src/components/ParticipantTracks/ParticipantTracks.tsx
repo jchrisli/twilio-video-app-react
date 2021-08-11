@@ -27,6 +27,7 @@ export default function ParticipantTracks({
   const publications = usePublications(participant);
 
   let filteredPublications;
+  const rotateVideo = participant.identity.startsWith('mobile');
 
   if (false && publications.some(p => p.trackName.includes('screen'))) {
     filteredPublications = publications.filter(p => !p.trackName.includes('camera'));
@@ -44,6 +45,7 @@ export default function ParticipantTracks({
           isLocalParticipant={isLocalParticipant}
           videoOnly={videoOnly}
           videoPriority={videoPriority}
+          rotate={rotateVideo}
         />
       ))}
     </>

@@ -14,13 +14,15 @@ interface VideoTrackProps {
   track: IVideoTrack;
   isLocal?: boolean;
   priority?: Track.Priority | null;
+  rotate?: boolean;
 }
 
-export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps) {
+export default function VideoTrack({ track, isLocal, priority, rotate }: VideoTrackProps) {
   const ref = useRef<HTMLVideoElement>(null!);
   const mediaStreamTrack = useMediaStreamTrack(track);
   const dimensions = useVideoTrackDimensions(track);
   const isPortrait = (dimensions?.height ?? 0) > (dimensions?.width ?? 0);
+  const rotateVideo = rotate ? true : false;
 
   useEffect(() => {
     const el = ref.current;
@@ -41,7 +43,8 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
   // The local video track is mirrored if it is not facing the environment.
   const isFrontFacing = mediaStreamTrack?.getSettings().facingMode !== 'environment';
   const style = {
-    transform: isLocal && isFrontFacing ? 'rotateY(180deg)' : '',
+    //transform: isLocal && isFrontFacing ? 'rotateY(180deg)' : '',
+    transform: rotateVideo ? 'rotate(0.5turn)' : '',
     objectFit: isPortrait || track.name.includes('screen') ? ('contain' as const) : ('cover' as const),
     //objectFit: isPortrait || track.name.includes('screen') ? ('contain' as const) : ('fill' as const),
   };

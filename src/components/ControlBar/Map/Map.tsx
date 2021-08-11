@@ -19,6 +19,7 @@ import TurnLeft from '../../../icons/TurnLeft';
 import TurnRight from '../../../icons/TurnRight';
 import GoForward from '../../../icons/GoForward';
 import GoBackwards from '../../../icons/GoBackwards';
+import WorkspaceArea from './WorkspaceArea';
 
 interface MapProps {
   mapParticipantName: string;
@@ -31,6 +32,14 @@ interface Robot {
   y: number;
   heading: number;
   users: string[]; // first user is always the controller
+}
+
+interface Workspace {
+  id: number;
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -64,6 +73,9 @@ export default function Map({ mapParticipantName }: MapProps) {
   const [mapParticipant, setMapParticipant] = useState<RemoteParticipant | null>(null);
   // Start with no robots
   const [robots, setRobots] = useState<Robot[]>([]);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [showWorkspaces, setShowWorkspaces] = useState(true);
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(-1);
   const { room } = useVideoContext();
   const localName = room!.localParticipant.identity;
   //const mapRef = useRef<HTMLDivElement>(null);
@@ -97,6 +109,11 @@ export default function Map({ mapParticipantName }: MapProps) {
     sio.on('robot-update', data => {
       setRobots(data);
     });
+
+    sio.on('workspace-update', data => {
+      //console.log(`Workspace update ${data[0]}`);
+      setWorkspaces(data);
+    });
     return () => {
       sio.close();
     };
@@ -121,6 +138,10 @@ export default function Map({ mapParticipantName }: MapProps) {
       }
     }
   }, [participants, robots]);
+
+  useEffect(() => {
+    // Select one based on m
+  }, [workspaces]);
 
   // See https://stackoverflow.com/questions/60476155/is-it-safe-to-use-ref-current-as-useeffects-dependency-when-ref-points-to-a-dom
   const measureMap = useCallback(e => {
@@ -150,6 +171,40 @@ export default function Map({ mapParticipantName }: MapProps) {
     // Is it safe to update states in a regular callback? Does it use a stale closure?
     setGoalX(e.clientX - bb.left);
     setGoalY(e.clientY - bb.top);
+  };
+
+  const mainFrameOnMouseMove = function(e: React.MouseEvent) {
+    e.preventDefault();
+    const bb = e.currentTarget.getBoundingClientRect();
+
+    // Find the closest workspace and turn it on
+    const mx = e.clientX - bb.left,
+      my = e.clientY - bb.top;
+    let closestDist = Number.POSITIVE_INFINITY;
+    let closestId = selectedWorkspaceId;
+    for (let i = 0; i < workspaces.length; ++i) {
+      let w = workspaces[i];
+      let d = Math.hypot(
+        mx - (((w.x1 + w.x2) / 1280.0) * elemWidth) / 2,
+        my - (((w.y1 + w.y2) / 720.0) * elemHeight) / 2
+      );
+      if (d < closestDist) {
+        closestDist = d;
+        closestId = w.id;
+      }
+    }
+
+    if (closestId !== -1 && selectedWorkspaceId !== closestId) {
+      setSelectedWorkspaceId(closestId);
+    }
+  };
+
+  const mainFrameOnMouseEnter = function(e: React.MouseEvent) {
+    setShowWorkspaces(true);
+  };
+
+  const mainFrameOnMouseLeave = function(e: React.MouseEvent) {
+    setShowWorkspaces(false);
   };
 
   const onClickRobot = function(localUserName: string, robotId: number, e: React.MouseEvent) {
@@ -206,7 +261,14 @@ export default function Map({ mapParticipantName }: MapProps) {
   // return null if no map participant?
   return mapParticipant ? (
     <div>
-      <div onClick={mainFrameOnClick} ref={measureMap} style={{ position: 'relative' }}>
+      <div
+        onClick={mainFrameOnClick}
+        ref={measureMap}
+        onMouseMove={mainFrameOnMouseMove}
+        onMouseEnter={mainFrameOnMouseEnter}
+        onMouseLeave={mainFrameOnMouseLeave}
+        style={{ position: 'relative' }}
+      >
         <ParticipantTracks participant={mapParticipant} />
         {robots.map(r => (
           <RobotAvatar
@@ -221,6 +283,21 @@ export default function Map({ mapParticipantName }: MapProps) {
             key={r.id}
           />
         ))}
+        {showWorkspaces ? (
+          workspaces.map(w => (
+            <WorkspaceArea
+              key={w.id}
+              id={w.id}
+              x1={(w.x1 / 1280) * elemWidth}
+              x2={(w.x2 / 1280) * elemWidth}
+              y1={(w.y1 / 720) * elemHeight}
+              y2={(w.y2 / 720) * elemHeight}
+              on={w.id === selectedWorkspaceId}
+            />
+          ))
+        ) : (
+          <></>
+        )}
         <TargetIndicator x={goalX} y={goalY}></TargetIndicator>
       </div>
       <IconContainer>

@@ -18,10 +18,18 @@ interface PublicationProps {
   isLocalParticipant?: boolean;
   videoOnly?: boolean;
   videoPriority?: Track.Priority | null;
+  rotate?: boolean;
 }
 
-export default function Publication({ publication, isLocalParticipant, videoOnly, videoPriority }: PublicationProps) {
+export default function Publication({
+  publication,
+  isLocalParticipant,
+  videoOnly,
+  videoPriority,
+  rotate,
+}: PublicationProps) {
   const track = useTrack(publication);
+  const rotateVideo = rotate ? true : false;
 
   if (!track) return null;
 
@@ -32,6 +40,7 @@ export default function Publication({ publication, isLocalParticipant, videoOnly
           track={track as IVideoTrack}
           priority={videoPriority}
           isLocal={track.name.includes('camera') && isLocalParticipant}
+          rotate={rotateVideo}
         />
       );
     case 'audio':
