@@ -7,7 +7,7 @@ interface RobotAvatarProps {
   id: number;
   x: number;
   y: number;
-  heading?: number;
+  heading: number;
   hasControl: boolean;
   on: boolean;
   numberUsers: number;
@@ -46,6 +46,16 @@ const useStyles = makeStyles({
     //   // CSS property
     //   color: props => props.color,
   },
+  userCountDot: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    height: '4px',
+    width: '4px',
+    transformOrigin: 'center',
+    top: '-2px',
+    left: '-2px',
+    borderRadius: '50%',
+  },
 });
 
 export default function RobotAvatar(props: RobotAvatarProps) {
@@ -53,11 +63,39 @@ export default function RobotAvatar(props: RobotAvatarProps) {
   // const { room } = useVideoContext();
   // const localName = room!.localParticipant.identity;
   const classes = useStyles(props);
+  const userCountDotToCenter = 12;
+  const pieSlice = (2 * Math.PI) / 12;
+
+  const toAngle = (a: number) => ((a % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+  //<div className={classes.headingLine}></div>
 
   return (
     <>
       <div className={classes.avatarContainer} onClick={props.handleClick}></div>
-      <div className={classes.headingLine}></div>
+      <div>
+        {Array.from(Array(props.numberUsers).keys()).map(ind => (
+          <div
+            className={classes.userCountDot}
+            key={ind}
+            style={{
+              transform: `translate(${props.x +
+                userCountDotToCenter *
+                  Math.cos(toAngle(props.heading - ((props.numberUsers - 1) / 2 - ind) * pieSlice))}px,
+                                                                              ${props.y +
+                                                                                userCountDotToCenter *
+                                                                                  Math.sin(
+                                                                                    toAngle(
+                                                                                      props.heading -
+                                                                                        ((props.numberUsers - 1) / 2 -
+                                                                                          ind) *
+                                                                                          pieSlice
+                                                                                    )
+                                                                                  )}px)`,
+            }}
+          />
+        ))}
+      </div>
     </>
   );
 }
