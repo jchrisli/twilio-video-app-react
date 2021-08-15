@@ -7,6 +7,7 @@ import PreJoinScreens from './components/PreJoinScreens/PreJoinScreens';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
 import RecordingNotifications from './components/RecordingNotifications/RecordingNotifications';
 import Room from './components/Room/Room';
+import { isMobile } from './utils';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
@@ -23,6 +24,7 @@ const Main = styled('main')(({ theme }: { theme: Theme }) => ({
   [theme.breakpoints.down('sm')]: {
     paddingBottom: `${theme.mobileFooterHeight + theme.mobileTopBarHeight}px`, // Leave some space for the mobile header and footer
   },
+  transform: isMobile ? 'rotateZ(180deg)' : `default`,
 }));
 
 export default function App() {
