@@ -11,6 +11,7 @@ import { isMobile } from './utils';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 
 const Container = styled('div')({
   display: 'grid',
@@ -36,20 +37,27 @@ export default function App() {
   // We will dynamically set the height with 'window.innerHeight', which means that this
   // will look good on mobile browsers even after the location bar opens or closes.
   const height = useHeight();
+  const handle = useFullScreenHandle();
 
   return (
-    <Container style={{ height }}>
-      {roomState === 'disconnected' ? (
-        <PreJoinScreens />
-      ) : (
-        <Main>
-          <ReconnectingNotification />
-          <RecordingNotifications />
-          <MobileTopMenuBar />
-          <Room />
-          <MenuBar />
-        </Main>
-      )}
-    </Container>
+    <div>
+      <button onClick={handle.enter}>Enter fullscreen</button>
+
+      <FullScreen handle={handle}>
+        <Container style={{ height }}>
+          {roomState === 'disconnected' ? (
+            <PreJoinScreens />
+          ) : (
+            <Main>
+              <ReconnectingNotification />
+              <RecordingNotifications />
+              {/* <MobileTopMenuBar /> */}
+              <Room />
+              <MenuBar />
+            </Main>
+          )}
+        </Container>
+      </FullScreen>
+    </div>
   );
 }

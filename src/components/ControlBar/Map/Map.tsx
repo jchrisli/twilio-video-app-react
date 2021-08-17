@@ -83,7 +83,6 @@ export default function Map({ mapParticipantName }: MapProps) {
   const [elemHeight, setElemHeight] = useState(0);
   const [goalX, setGoalX] = useState(0);
   const [goalY, setGoalY] = useState(0);
-  var currentRobot: Robot;
 
   const classes = useStyles();
   // TODO: find out if using this hook for the 2nd time (already used in ParticipantList) would cause issues
@@ -130,9 +129,7 @@ export default function Map({ mapParticipantName }: MapProps) {
         //console.log(`participants length ${participants.length}`);
         if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
           //console.log(`Current selectedParticipant is ${selectedParticipant ? selectedParticipant?.identity : 'null'}`);
-          currentRobot = robots[i];
           setSelectedParticipant(selectedFromRobot[0]);
-          //console.log(`Setting selected participant ${selectedFromRobot[0].identity}`);
         }
         break;
       }
@@ -226,6 +223,11 @@ export default function Map({ mapParticipantName }: MapProps) {
     e.stopPropagation(); // Prevent the event from going to the map element
   };
 
+  const onClickHelp = (e: React.MouseEvent) => {
+    console.log('Get help');
+    var successBool = navigator.vibrate(200);
+  };
+
   const onClickLeft = (e: React.MouseEvent) => {
     console.log('Turn left');
   };
@@ -314,6 +316,11 @@ export default function Map({ mapParticipantName }: MapProps) {
         </div>
         <div className={classes.containerItem} onClick={onClickRight}>
           <TurnRight />
+        </div>
+      </IconContainer>
+      <IconContainer>
+        <div className={classes.containerItem} onClick={onClickHelp}>
+          <GoForward />
         </div>
       </IconContainer>
     </div>
