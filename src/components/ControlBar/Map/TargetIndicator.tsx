@@ -12,9 +12,10 @@ const useStyles = makeStyles({
   indicator: {
     position: 'absolute',
     borderRadius: '50%',
-    borderColor: '#8b0000',
+    borderColor: '#A6E22E',
     borderWidth: '2px',
     borderStyle: 'solid',
+    mixBlendMode: 'hard-light',
     //backgroundColor: props.hasControl ? '#9acd32' : props.on ? '#eb6534' : '#888', // Green if has control, blue if on the robot, grey otherwise
     //left: `${props.x - size / 2}px`,
     //top: `${props.y - size / 2}px`,

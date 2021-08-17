@@ -13,12 +13,17 @@ import { RemoteParticipant } from 'twilio-video';
 import { useCallback } from 'react';
 import TargetIndicator from './TargetIndicator';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Accordion from '@material-ui/core/ExpansionPanel';
+import AccordionSummary from '@material-ui/core/ExpansionPanelSummary';
+import AccordionDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import { styled } from '@material-ui/core';
 import TurnLeft from '../../../icons/TurnLeft';
 import TurnRight from '../../../icons/TurnRight';
 import GoForward from '../../../icons/GoForward';
 import GoBackwards from '../../../icons/GoBackwards';
+import Guide from '../../../icons/Guide';
 import WorkspaceArea from './WorkspaceArea';
 
 interface MapProps {
@@ -54,6 +59,11 @@ const useStyles = makeStyles((theme: Theme) =>
       aspectRatio: '1',
       padding: '6px',
     },
+    //guideContainter: {
+    //display: 'flex',
+    //justifyContent: 'center',
+    //width: '100%',
+    //}
   })
 );
 
@@ -73,6 +83,9 @@ export default function Map({ mapParticipantName }: MapProps) {
   const [mapParticipant, setMapParticipant] = useState<RemoteParticipant | null>(null);
   // Start with no robots
   const [robots, setRobots] = useState<Robot[]>([]);
+  //const [currentRobot, setCurrentRobot] = useState<Robot | null>(null);
+  const controllingRobot = useRef<Robot | null>(null);
+  const onRobot = useRef<Robot | null>(null);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [showWorkspaces, setShowWorkspaces] = useState(true);
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(-1);
@@ -124,11 +137,12 @@ export default function Map({ mapParticipantName }: MapProps) {
     for (; i < robots.length; i++) {
       if (robots[i].users.indexOf(localName) !== -1) {
         const robotId = robots[i].id;
+        onRobot.current = robots[i];
+        controllingRobot.current = robots[i].users[0] === localName ? robots[i] : null;
         const selectedFromRobot = participants.filter(p => p.identity === `mobile${robotId}`);
         //console.log(`selectedFromRobot length ${selectedFromRobot.length}`);
         //console.log(`participants length ${participants.length}`);
         if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
-          //console.log(`Current selectedParticipant is ${selectedParticipant ? selectedParticipant?.identity : 'null'}`);
           setSelectedParticipant(selectedFromRobot[0]);
         }
         break;
@@ -159,8 +173,9 @@ export default function Map({ mapParticipantName }: MapProps) {
       y: e.clientY - bb.top,
       w: (e.currentTarget as Element).clientWidth,
       h: (e.currentTarget as Element).clientHeight,
-      heading: 3.1416 / 2,
+      //heading: 3.1416 / 2,
       username: localName,
+      workspace: selectedWorkspaceId,
     };
     console.log(`Clicked ${clickMsg.x} ${clickMsg.y} on ${clickMsg.w} and ${clickMsg.h}`);
     sio.emit('robot-go', clickMsg);
@@ -228,36 +243,56 @@ export default function Map({ mapParticipantName }: MapProps) {
     var successBool = navigator.vibrate(200);
   };
 
-  const onClickLeft = (e: React.MouseEvent) => {
-    console.log('Turn left');
+  const makeRCMessage = (dir: string, name: string, r: Robot) => {
+    return {
+      username: name,
+      id: r.id,
+      direction: dir,
+    };
   };
 
-  const onClickRight = (e: React.MouseEvent) => {
-    console.log('Turn right');
+  //const onPressLeft = (e: React.MouseEvent) => {
+  //console.log('Turn left');
+  //if (controllingRobot.current !== null) {
+  //sio.emit('robot-rc', makeRCMessage('l', localName, controllingRobot.current));
+  //}
+  //};
+
+  //const onPressRight = (e: React.MouseEvent) => {
+  //console.log('Turn right');
+  //if (controllingRobot.current !== null) {
+  //sio.emit('robot-rc', makeRCMessage('r', localName, controllingRobot.current));
+  //}
+  //};
+
+  //const onPressUp = (e: React.MouseEvent) => {
+  //console.log('Go forward');
+  //if (controllingRobot.current !== null) {
+  //sio.emit('robot-rc', makeRCMessage('f', localName, controllingRobot.current));
+  //}
+
+  //};
+
+  //const onPressDown = (e: React.MouseEvent) => {
+  //console.log('Go backwards');
+  //if (controllingRobot.current !== null) {
+  //sio.emit('robot-rc', makeRCMessage('b', localName, controllingRobot.current));
+  //}
+  //};
+
+  const onDirectionButtonPress = (direction: string, e: React.MouseEvent) => {
+    console.log(`Go ${direction}`);
+    if (controllingRobot.current !== null) {
+      sio.emit('robot-rc', makeRCMessage(direction, localName, controllingRobot.current));
+      console.log(`Sent message ${direction}`);
+    }
   };
 
-  const onClickUp = (e: React.MouseEvent) => {
-    console.log('Go forward');
-    //e.preventDefault();
-    //const bb = e.currentTarget.getBoundingClientRect();
-
-    //let clickMsg = {
-    //x: e.clientX,
-    //y: e.clientY + 10,
-    //w: 0,
-    //h: (e.currentTarget as Element).clientHeight,
-    //heading: 3.1416 / 2,
-    //username: localName,
-    //};
-    //sio.emit('robot-go', clickMsg);
-
-    //// Is it safe to update states in a regular callback? Does it use a stale closure?
-    //setGoalX(e.clientX);
-    //setGoalY(e.clientY - bb.right);
-  };
-
-  const onClickDown = (e: React.MouseEvent) => {
-    console.log('Go backwards');
+  const onButtonRelease = (e: React.MouseEvent) => {
+    console.log('Mouse released!');
+    if (controllingRobot.current !== null) {
+      sio.emit('robot-rc', makeRCMessage('s', localName, controllingRobot.current));
+    }
   };
 
   // return null if no map participant?
@@ -303,18 +338,34 @@ export default function Map({ mapParticipantName }: MapProps) {
         <TargetIndicator x={goalX} y={goalY}></TargetIndicator>
       </div>
       <IconContainer>
-        <div className={classes.containerItem} onClick={onClickUp}>
+        <div
+          className={classes.containerItem}
+          onMouseDown={onDirectionButtonPress.bind(null, 'f')}
+          onMouseUp={onButtonRelease}
+        >
           <GoForward />
         </div>
       </IconContainer>
       <IconContainer>
-        <div className={classes.containerItem} onClick={onClickLeft}>
+        <div
+          className={classes.containerItem}
+          onMouseDown={onDirectionButtonPress.bind(null, 'l')}
+          onMouseUp={onButtonRelease}
+        >
           <TurnLeft />
         </div>
-        <div className={classes.containerItem} onClick={onClickDown}>
+        <div
+          className={classes.containerItem}
+          onMouseDown={onDirectionButtonPress.bind(null, 'b')}
+          onMouseUp={onButtonRelease}
+        >
           <GoBackwards />
         </div>
-        <div className={classes.containerItem} onClick={onClickRight}>
+        <div
+          className={classes.containerItem}
+          onMouseDown={onDirectionButtonPress.bind(null, 'r')}
+          onMouseUp={onButtonRelease}
+        >
           <TurnRight />
         </div>
       </IconContainer>
@@ -323,6 +374,14 @@ export default function Map({ mapParticipantName }: MapProps) {
           <GoForward />
         </div>
       </IconContainer>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMore />}>Help</AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Guide />
+          </div>
+        </AccordionDetails>
+      </Accordion>
     </div>
   ) : null;
 }

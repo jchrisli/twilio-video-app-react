@@ -41,7 +41,7 @@ export default function App() {
 
   return (
     <div>
-      <button onClick={handle.enter}>Enter fullscreen</button>
+      <button onClick={handle.enter}>fullscreen</button>
 
       <FullScreen handle={handle}>
         <Container style={{ height }}>
