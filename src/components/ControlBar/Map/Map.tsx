@@ -37,6 +37,7 @@ interface Robot {
   y: number;
   heading: number;
   users: string[]; // first user is always the controller
+  pinned: boolean;
 }
 
 interface Workspace {
@@ -89,6 +90,7 @@ export default function Map({ mapParticipantName }: MapProps) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [showWorkspaces, setShowWorkspaces] = useState(true);
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(-1);
+  const [spotlightRobotId, setSpotlightRobotId] = useState(-1);
   const { room } = useVideoContext();
   const localName = room!.localParticipant.identity;
   //const mapRef = useRef<HTMLDivElement>(null);
@@ -126,29 +128,47 @@ export default function Map({ mapParticipantName }: MapProps) {
       //console.log(`Workspace update ${data[0]}`);
       setWorkspaces(data);
     });
+
+    sio.on('spotlight', data => {
+      let robotId = data['id'];
+      let on = data['on'];
+      if (on && spotlightRobotId !== robotId && robotId != -1) {
+        setSpotlightRobotId(robotId);
+        //setSelectedParticpantByRobotId(robotId);
+      }
+      if (!on) {
+        setSpotlightRobotId(-1);
+        // Gob back to the robot the participant control?
+      }
+    });
     return () => {
       sio.close();
     };
   }, []);
 
   useEffect(() => {
-    let i = 0;
-    // Find the robot the local user is on
-    for (; i < robots.length; i++) {
-      if (robots[i].users.indexOf(localName) !== -1) {
-        const robotId = robots[i].id;
-        onRobot.current = robots[i];
-        controllingRobot.current = robots[i].users[0] === localName ? robots[i] : null;
-        const selectedFromRobot = participants.filter(p => p.identity === `mobile${robotId}`);
-        //console.log(`selectedFromRobot length ${selectedFromRobot.length}`);
-        //console.log(`participants length ${participants.length}`);
-        if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
-          setSelectedParticipant(selectedFromRobot[0]);
+    if (spotlightRobotId === -1) {
+      let i = 0;
+      // Find the robot the local user is on
+      for (; i < robots.length; i++) {
+        if (robots[i].users.indexOf(localName) !== -1) {
+          const robotId = robots[i].id;
+          onRobot.current = robots[i];
+          controllingRobot.current = robots[i].users[0] === localName ? robots[i] : null;
+          const selectedFromRobot = participants.filter(p => p.identity === `mobile${robotId}`);
+          if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
+            setSelectedParticipant(selectedFromRobot[0]);
+          }
+          break;
         }
-        break;
+      }
+    } else {
+      const selectedFromRobot = participants.filter(p => p.identity === `mobile${spotlightRobotId}`);
+      if (selectedFromRobot.length > 0 && selectedParticipant !== selectedFromRobot[0]) {
+        setSelectedParticipant(selectedFromRobot[0]);
       }
     }
-  }, [participants, robots]);
+  }, [participants, robots, spotlightRobotId]);
 
   useEffect(() => {
     // Select one based on m
@@ -311,6 +331,8 @@ export default function Map({ mapParticipantName }: MapProps) {
             hasControl={r.users.length > 0 && r.users[0] === localName}
             numberUsers={r.users.length}
             on={r.users.indexOf(localName) !== -1}
+            spotlighted={r.id === spotlightRobotId}
+            pinned={r.pinned}
             handleClick={onClickRobot.bind(null, localName, r.id)}
             key={r.id}
           />
