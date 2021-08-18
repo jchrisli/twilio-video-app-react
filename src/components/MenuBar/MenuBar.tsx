@@ -8,6 +8,8 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Typography, Grid, Hidden } from '@material-ui/core';
 import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
+import ToggleCallButton from '../Buttons/ToggleCallButton/ToggleCallButton';
+import { isMobile } from '../../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 0,
       height: `${theme.footerHeight}px`,
       position: 'fixed',
-      display: 'flex',
+      display: isMobile ? 'none' : 'flex',
       padding: '0 1.43em',
       zIndex: 10,
       [theme.breakpoints.down('sm')]: {
@@ -35,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+const onClickCall = (e: React.MouseEvent) => {
+  console.log('Calling for help');
+};
 
 export default function MenuBar() {
   const classes = useStyles();

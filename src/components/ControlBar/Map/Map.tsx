@@ -258,6 +258,11 @@ export default function Map({ mapParticipantName }: MapProps) {
     e.stopPropagation(); // Prevent the event from going to the map element
   };
 
+  const onClickHelp = (e: React.MouseEvent) => {
+    console.log('Get help');
+    var successBool = navigator.vibrate(200);
+  };
+
   const makeRCMessage = (dir: string, name: string, r: Robot) => {
     return {
       username: name,
@@ -384,6 +389,11 @@ export default function Map({ mapParticipantName }: MapProps) {
           onMouseUp={onButtonRelease}
         >
           <TurnRight />
+        </div>
+      </IconContainer>
+      <IconContainer>
+        <div className={classes.containerItem} onClick={onClickHelp}>
+          <GoForward />
         </div>
       </IconContainer>
       <Accordion>
