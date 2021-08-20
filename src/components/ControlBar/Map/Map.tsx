@@ -271,35 +271,6 @@ export default function Map({ mapParticipantName }: MapProps) {
     };
   };
 
-  //const onPressLeft = (e: React.MouseEvent) => {
-  //console.log('Turn left');
-  //if (controllingRobot.current !== null) {
-  //sio.emit('robot-rc', makeRCMessage('l', localName, controllingRobot.current));
-  //}
-  //};
-
-  //const onPressRight = (e: React.MouseEvent) => {
-  //console.log('Turn right');
-  //if (controllingRobot.current !== null) {
-  //sio.emit('robot-rc', makeRCMessage('r', localName, controllingRobot.current));
-  //}
-  //};
-
-  //const onPressUp = (e: React.MouseEvent) => {
-  //console.log('Go forward');
-  //if (controllingRobot.current !== null) {
-  //sio.emit('robot-rc', makeRCMessage('f', localName, controllingRobot.current));
-  //}
-
-  //};
-
-  //const onPressDown = (e: React.MouseEvent) => {
-  //console.log('Go backwards');
-  //if (controllingRobot.current !== null) {
-  //sio.emit('robot-rc', makeRCMessage('b', localName, controllingRobot.current));
-  //}
-  //};
-
   const onDirectionButtonPress = (direction: string, e: React.MouseEvent) => {
     console.log(`Go ${direction}`);
     if (controllingRobot.current !== null) {
@@ -389,11 +360,6 @@ export default function Map({ mapParticipantName }: MapProps) {
           onMouseUp={onButtonRelease}
         >
           <TurnRight />
-        </div>
-      </IconContainer>
-      <IconContainer>
-        <div className={classes.containerItem} onClick={onClickHelp}>
-          <GoForward />
         </div>
       </IconContainer>
       <Accordion>

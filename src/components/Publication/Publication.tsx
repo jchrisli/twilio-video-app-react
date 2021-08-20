@@ -11,6 +11,7 @@ import {
   RemoteTrackPublication,
   Track,
 } from 'twilio-video';
+import { createImmediatelyInvokedFunctionExpression } from 'typescript';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
@@ -19,6 +20,7 @@ interface PublicationProps {
   videoOnly?: boolean;
   videoPriority?: Track.Priority | null;
   rotate?: boolean;
+  //forceAudio?: boolean;
 }
 
 export default function Publication({
@@ -27,14 +29,20 @@ export default function Publication({
   videoOnly,
   videoPriority,
   rotate,
-}: PublicationProps) {
+}: //forceAudio
+PublicationProps) {
   const track = useTrack(publication);
   const rotateVideo = rotate ? true : false;
+  //const mustAudio = forceAudio ? true: false;
 
   if (!track) return null;
 
   switch (track.kind) {
     case 'video':
+      //if(mustAudio) {
+      //return (<AudioTrack track={track as IAudioTrack} />);
+      //}
+      //else
       return (
         <VideoTrack
           track={track as IVideoTrack}
