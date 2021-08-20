@@ -98,6 +98,7 @@ export default function Map({ mapParticipantName }: MapProps) {
   const [elemHeight, setElemHeight] = useState(0);
   const [goalX, setGoalX] = useState(0);
   const [goalY, setGoalY] = useState(0);
+  const [notification, setNotification] = useState(false);
 
   const classes = useStyles();
   // TODO: find out if using this hook for the 2nd time (already used in ParticipantList) would cause issues
@@ -141,6 +142,12 @@ export default function Map({ mapParticipantName }: MapProps) {
         // Gob back to the robot the participant control?
       }
     });
+
+    sio.on('help', data => {
+      //console.log(`Workspace update ${data[0]}`);
+      var successBool = navigator.vibrate(200);
+    });
+
     return () => {
       sio.close();
     };
@@ -260,7 +267,7 @@ export default function Map({ mapParticipantName }: MapProps) {
 
   const onClickHelp = (e: React.MouseEvent) => {
     console.log('Get help');
-    var successBool = navigator.vibrate(200);
+    sio.emit('help', true);
   };
 
   const makeRCMessage = (dir: string, name: string, r: Robot) => {
