@@ -73,7 +73,8 @@ export default function ParticipantList() {
             const display =
               (isMobile && !participant.identity.startsWith('mobile')) ||
               (!isMobile && participant.identity.startsWith('mobile'));
-            if (display) {
+            // Map particpant is displayed in the control bar
+            if (!participant.identity.startsWith('map')) {
               return (
                 <div className={classes.containerItem}>
                   <Participant
@@ -81,6 +82,7 @@ export default function ParticipantList() {
                     participant={participant}
                     isSelected={participant === selectedParticipant}
                     onClick={() => setSelectedParticipant(participant)}
+                    forceAudio={!display}
                   />
                 </div>
               );

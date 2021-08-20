@@ -10,6 +10,7 @@ interface ParticipantProps {
   isSelected?: boolean;
   isLocalParticipant?: boolean;
   hideParticipant?: boolean;
+  forceAudio?: boolean;
 }
 
 export default function Participant({
@@ -19,16 +20,29 @@ export default function Participant({
   isSelected,
   isLocalParticipant,
   hideParticipant,
+  forceAudio,
 }: ParticipantProps) {
-  return (
-    <ParticipantInfo
-      participant={participant}
-      onClick={onClick}
-      isSelected={isSelected}
-      isLocalParticipant={isLocalParticipant}
-      hideParticipant={hideParticipant}
-    >
-      <ParticipantTracks participant={participant} videoOnly={videoOnly} isLocalParticipant={isLocalParticipant} />
-    </ParticipantInfo>
-  );
+  const audioOnly = forceAudio ? true : false;
+  if (!audioOnly)
+    return (
+      <ParticipantInfo
+        participant={participant}
+        onClick={onClick}
+        isSelected={isSelected}
+        isLocalParticipant={isLocalParticipant}
+        hideParticipant={hideParticipant}
+      >
+        <ParticipantTracks participant={participant} videoOnly={videoOnly} isLocalParticipant={isLocalParticipant} />
+      </ParticipantInfo>
+    );
+  else {
+    return (
+      <ParticipantTracks
+        participant={participant}
+        videoOnly={videoOnly}
+        isLocalParticipant={isLocalParticipant}
+        forceAudio={true}
+      />
+    );
+  }
 }

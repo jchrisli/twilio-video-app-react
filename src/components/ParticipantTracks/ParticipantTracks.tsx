@@ -8,6 +8,7 @@ interface ParticipantTracksProps {
   videoOnly?: boolean;
   videoPriority?: Track.Priority | null;
   isLocalParticipant?: boolean;
+  forceAudio?: boolean;
 }
 
 /*
@@ -23,11 +24,13 @@ export default function ParticipantTracks({
   videoOnly,
   videoPriority,
   isLocalParticipant,
+  forceAudio,
 }: ParticipantTracksProps) {
   const publications = usePublications(participant);
 
   let filteredPublications;
   const rotateVideo = participant.identity.startsWith('mobile');
+  const audioOnly = forceAudio ? true : false;
 
   if (false && publications.some(p => p.trackName.includes('screen'))) {
     filteredPublications = publications.filter(p => !p.trackName.includes('camera'));
@@ -46,6 +49,7 @@ export default function ParticipantTracks({
           videoOnly={videoOnly}
           videoPriority={videoPriority}
           rotate={rotateVideo}
+          forceAudio={audioOnly}
         />
       ))}
     </>

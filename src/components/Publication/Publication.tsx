@@ -20,7 +20,7 @@ interface PublicationProps {
   videoOnly?: boolean;
   videoPriority?: Track.Priority | null;
   rotate?: boolean;
-  //forceAudio?: boolean;
+  forceAudio?: boolean;
 }
 
 export default function Publication({
@@ -29,28 +29,29 @@ export default function Publication({
   videoOnly,
   videoPriority,
   rotate,
+  forceAudio,
 }: //forceAudio
 PublicationProps) {
   const track = useTrack(publication);
   const rotateVideo = rotate ? true : false;
-  //const mustAudio = forceAudio ? true: false;
+  const mustAudio = forceAudio ? true : false;
 
   if (!track) return null;
 
   switch (track.kind) {
     case 'video':
-      //if(mustAudio) {
-      //return (<AudioTrack track={track as IAudioTrack} />);
-      //}
-      //else
-      return (
-        <VideoTrack
-          track={track as IVideoTrack}
-          priority={videoPriority}
-          isLocal={track.name.includes('camera') && isLocalParticipant}
-          rotate={rotateVideo}
-        />
-      );
+      if (mustAudio) {
+        // Only render audio for these participants
+        return null;
+      } else
+        return (
+          <VideoTrack
+            track={track as IVideoTrack}
+            priority={videoPriority}
+            isLocal={track.name.includes('camera') && isLocalParticipant}
+            rotate={rotateVideo}
+          />
+        );
     case 'audio':
       return videoOnly ? null : <AudioTrack track={track as IAudioTrack} />;
     default:
