@@ -24,7 +24,15 @@ const useStyles = makeStyles({
     return {
       position: 'absolute',
       borderRadius: '50%',
-      backgroundColor: props.hasControl ? '#9acd32' : props.on ? '#eb6534' : '#888', // Green if has control, blue if on the robot, grey otherwise
+      backgroundColor: props.spotlighted
+        ? '#ffcc00'
+        : props.pinned
+        ? '#ff3a30'
+        : props.hasControl
+        ? '#28cd41'
+        : props.on
+        ? '#55bff0'
+        : '#8e8e93', // Green if has control, blue if on the robot, grey otherwise
       left: `${props.x - size / 2}px`,
       top: `${props.y - size / 2}px`,
       color: '#eee',

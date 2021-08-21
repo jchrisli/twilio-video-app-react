@@ -23,7 +23,8 @@ const useStyles = makeStyles({
     return {
       position: 'absolute',
       backgroundColor: 'transparent', // Green if has control, blue if on the robot, grey otherwise
-      borderColor: props.on ? '#8b0000ff' : '#8b000044',
+      borderColor: props.on ? '#f5234aff' : '#f5234a44',
+      mixBlendMode: 'hard-light',
       borderWidth: '3px',
       borderStyle: 'dashed',
       left: `${left}px`,
