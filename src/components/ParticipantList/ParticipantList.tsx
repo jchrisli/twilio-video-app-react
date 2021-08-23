@@ -7,7 +7,7 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import { isMobile } from '../../utils';
-import { isClassExpression } from 'typescript';
+import { Hidden } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,10 +46,17 @@ const useStyles = makeStyles((theme: Theme) =>
     containerItem: {
       padding: isMobile ? '0px' : `default`,
     },
+    faded: {
+      opacity: 0.0,
+    },
   })
 );
 
-export default function ParticipantList() {
+interface ParticipantListProps {
+  focusRobotId: number;
+}
+
+export default function ParticipantList({ focusRobotId }: ParticipantListProps) {
   const classes = useStyles();
   const { room } = useVideoContext();
   const localParticipant = room!.localParticipant;
@@ -68,7 +75,13 @@ export default function ParticipantList() {
     >
       <div className={classes.scrollContainer}>
         <div className={classes.innerScrollContainer}>
-          {participants.map(participant => {
+          {(focusRobotId > 0
+            ? [
+                ...participants.filter(p => p.identity === `mobile${focusRobotId}`),
+                ...participants.filter(p => p.identity !== `mobile${focusRobotId}`),
+              ]
+            : participants
+          ).map(participant => {
             const isSelected = participant === selectedParticipant;
             const display =
               (isMobile && !participant.identity.startsWith('mobile')) ||
@@ -76,7 +89,12 @@ export default function ParticipantList() {
             // Map particpant is displayed in the control bar
             if (!participant.identity.startsWith('map')) {
               return (
-                <div className={classes.containerItem}>
+                <div
+                  key={participant.sid}
+                  className={clsx(classes.containerItem, {
+                    [classes.faded]: participant.identity !== `mobile${focusRobotId}`,
+                  })}
+                >
                   <Participant
                     key={participant.sid}
                     participant={participant}
@@ -86,7 +104,7 @@ export default function ParticipantList() {
                   />
                 </div>
               );
-            }
+            } else return null;
           })}
         </div>
       </div>

@@ -14,7 +14,9 @@ interface RobotAvatarProps {
   numberUsers: number;
   pinned: boolean;
   spotlighted: boolean;
-  handleClick: (e: React.MouseEvent) => void; // Note: does it return void?
+  handleClick: (e: React.MouseEvent) => void;
+  handleMouseEnter: (e: React.MouseEvent) => void; // Use to set focus robot id
+  handleMouseLeave: (e: React.MouseEvent) => void;
 }
 
 const useStyles = makeStyles({
@@ -86,7 +88,12 @@ export default function RobotAvatar(props: RobotAvatarProps) {
 
   return (
     <>
-      <div className={classes.avatarContainer} onClick={props.handleClick}>
+      <div
+        className={classes.avatarContainer}
+        onClick={props.handleClick}
+        onMouseEnter={props.handleMouseEnter}
+        onMouseLeave={props.handleMouseLeave}
+      >
         {props.spotlighted ? <PriorityHighIcon /> : props.pinned ? <Lock></Lock> : null}
       </div>
       <div>
