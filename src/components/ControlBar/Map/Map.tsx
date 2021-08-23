@@ -27,6 +27,7 @@ import GoForward from '../../../icons/GoForward';
 import GoBackwards from '../../../icons/GoBackwards';
 import Guide from '../../../icons/Guide';
 import WorkspaceArea from './WorkspaceArea';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 interface MapProps {
   mapParticipant: Participant | null;
@@ -49,6 +50,10 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '25%',
       aspectRatio: '1',
       padding: '6px',
+    },
+    zoomItem: {
+      display: 'flex',
+      justifyContent: 'center',
     },
     //guideContainter: {
     //display: 'flex',
@@ -87,7 +92,7 @@ export default function Map({
   const [goalY, setGoalY] = useState(0);
   const [notification, setNotification] = useState(false);
 
-  //const classes = useStyles();
+  const classes = useStyles();
   // TODO: find out if using this hook for the 2nd time (already used in ParticipantList) would cause issues
   //const [
   //selectedParticipant,
@@ -299,7 +304,21 @@ export default function Map({
         onMouseLeave={mainFrameOnMouseLeave}
         style={{ position: 'relative' }}
       >
-        <ParticipantTracks participant={mapParticipant} />
+        <TransformWrapper initialScale={1}>
+          {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+            <React.Fragment>
+              <TransformComponent>
+                <ParticipantTracks participant={mapParticipant} />
+              </TransformComponent>
+              <div className={classes.zoomItem}>
+                <button onClick={() => zoomIn()}>+</button>
+                <button onClick={() => zoomOut()}>-</button>
+                <button onClick={() => resetTransform()}>x</button>
+              </div>
+            </React.Fragment>
+          )}
+        </TransformWrapper>
+
         {robots.map(r => (
           <RobotAvatar
             id={r.id}
