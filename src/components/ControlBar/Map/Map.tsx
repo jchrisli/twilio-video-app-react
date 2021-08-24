@@ -27,7 +27,7 @@ import GoForward from '../../../icons/GoForward';
 import GoBackwards from '../../../icons/GoBackwards';
 import Guide from '../../../icons/Guide';
 import WorkspaceArea from './WorkspaceArea';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+//import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 interface MapProps {
   mapParticipant: Participant | null;
@@ -294,6 +294,22 @@ export default function Map({
   //};
 
   // return null if no map participant?
+  // Zoom-in.out backup
+  //    <TransformWrapper initialScale={1}>
+  //{({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+  //<React.Fragment>
+  //<TransformComponent>
+  //<ParticipantTracks participant={mapParticipant} />
+  //</TransformComponent>
+  //<div className={classes.zoomItem}>
+  //<button onClick={() => zoomIn()}>+</button>
+  //<button onClick={() => zoomOut()}>-</button>
+  //<button onClick={() => resetTransform()}>x</button>
+  //</div>
+  //</React.Fragment>
+  //)}
+  //</TransformWrapper>
+
   return mapParticipant ? (
     <div>
       <div
@@ -304,21 +320,7 @@ export default function Map({
         onMouseLeave={mainFrameOnMouseLeave}
         style={{ position: 'relative' }}
       >
-        <TransformWrapper initialScale={1}>
-          {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-            <React.Fragment>
-              <TransformComponent>
-                <ParticipantTracks participant={mapParticipant} />
-              </TransformComponent>
-              <div className={classes.zoomItem}>
-                <button onClick={() => zoomIn()}>+</button>
-                <button onClick={() => zoomOut()}>-</button>
-                <button onClick={() => resetTransform()}>x</button>
-              </div>
-            </React.Fragment>
-          )}
-        </TransformWrapper>
-
+        <ParticipantTracks participant={mapParticipant} />
         {robots.map(r => (
           <RobotAvatar
             id={r.id}

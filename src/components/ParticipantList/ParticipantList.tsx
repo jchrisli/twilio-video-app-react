@@ -8,6 +8,9 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import { isMobile } from '../../utils';
 import { Hidden } from '@material-ui/core';
+import { Robot } from '../Room/Room';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,16 +57,27 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ParticipantListProps {
   focusRobotId: number;
+  robots: Robot[];
 }
 
-export default function ParticipantList({ focusRobotId }: ParticipantListProps) {
+export default function ParticipantList({ focusRobotId, robots }: ParticipantListProps) {
   const classes = useStyles();
   const { room } = useVideoContext();
   const localParticipant = room!.localParticipant;
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
-  const mainParticipant = useMainParticipant();
+  //const mainParticipant = useMainParticipant();
   const isRemoteParticipantScreenSharing = false;
+
+  const localRobotId =
+    isMobile && localParticipant.identity.startsWith('mobile') ? parseInt(localParticipant.identity.substr(6, 1)) : -1;
+  const [localRobotUsers, setLocalRobotUsers] = useState<string[]>([]);
+  useEffect(() => {
+    const localRobot = robots.filter(r => r.id === localRobotId);
+    if (localRobot.length > 0) {
+      setLocalRobotUsers(localRobot[0].users);
+    }
+  }, [robots]);
 
   if (participants.length === 0) return null; // Don't render this component if there are no remote participants.
 
@@ -82,9 +96,9 @@ export default function ParticipantList({ focusRobotId }: ParticipantListProps) 
               ]
             : participants
           ).map(participant => {
-            const isSelected = participant === selectedParticipant;
+            //const isSelected = participant === selectedParticipant;
             const display =
-              (isMobile && !participant.identity.startsWith('mobile')) ||
+              (isMobile && localRobotUsers.indexOf(participant.identity) !== -1) ||
               (!isMobile && participant.identity.startsWith('mobile'));
             // Map particpant is displayed in the control bar
             if (!participant.identity.startsWith('map')) {
@@ -92,7 +106,7 @@ export default function ParticipantList({ focusRobotId }: ParticipantListProps) 
                 <div
                   key={participant.sid}
                   className={clsx(classes.containerItem, {
-                    [classes.faded]: participant.identity !== `mobile${focusRobotId}`,
+                    [classes.faded]: !isMobile && participant.identity !== `mobile${focusRobotId}`,
                   })}
                 >
                   <Participant

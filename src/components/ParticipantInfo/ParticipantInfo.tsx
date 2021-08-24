@@ -32,8 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: `calc(${(9 / 16) * 100}% - ${theme.participantBorderWidth}px)`,
       background: 'black',
       [theme.breakpoints.down('sm')]: {
-        height: theme.sidebarMobileHeight,
-        width: `${(theme.sidebarMobileHeight * 16) / 9}px`,
+        //height: theme.sidebarMobileHeight,
+        height: `${theme.sidebarMobileHeight - 6}px`,
+        width: `${((theme.sidebarMobileHeight - 6) * 16) / 9}px`,
         marginRight: '8px',
         marginBottom: '0',
         fontSize: '10px',

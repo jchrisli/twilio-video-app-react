@@ -209,9 +209,9 @@ export default function Room() {
     return (
       <div>
         <div className={clsx(classes.containerMobile)}>
-          <ParticipantList focusRobotId={1} />
+          <ParticipantList focusRobotId={-1} robots={robots} />
         </div>
-        <div style={{ borderTop: '2px solid #ffff00 ' }}></div>
+        <div style={{ borderTop: '3px solid #ffff00 ' }}></div>
         <div className={clsx(classes.containerMobile)}>
           <Participant participant={localParticipant} isLocalParticipant={true} />
         </div>
@@ -221,7 +221,7 @@ export default function Room() {
     return (
       <div className={clsx(classes.container)}>
         <MainParticipant />
-        <ParticipantList focusRobotId={focusRobotId} />
+        <ParticipantList focusRobotId={focusRobotId} robots={robots} />
         <ControlBar
           robots={robots}
           workspaces={workspaces}
