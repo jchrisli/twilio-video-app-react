@@ -4,11 +4,7 @@ import { styled } from '@material-ui/core/styles';
 import { Track } from 'twilio-video';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
 import useVideoTrackDimensions from '../../hooks/useVideoTrackDimensions/useVideoTrackDimensions';
-
-const Video = styled('video')({
-  width: '100%',
-  height: '100%',
-});
+import { isMobile } from '../../utils';
 
 interface VideoTrackProps {
   track: IVideoTrack;
@@ -18,6 +14,15 @@ interface VideoTrackProps {
 }
 
 export default function VideoTrack({ track, isLocal, priority, rotate }: VideoTrackProps) {
+  const Video = styled('video')({
+    width: isMobile && isLocal ? '200%' : '100%',
+    height: isMobile && isLocal ? '200%' : '100%',
+    flex: 1,
+    justifyContent: 'stretch',
+    objectFit: 'contain',
+    alignSelf: 'stretch',
+    resizeMode: 'cover',
+  });
   const ref = useRef<HTMLVideoElement>(null!);
   const mediaStreamTrack = useMediaStreamTrack(track);
   const dimensions = useVideoTrackDimensions(track);
@@ -46,6 +51,7 @@ export default function VideoTrack({ track, isLocal, priority, rotate }: VideoTr
     //transform: isLocal && isFrontFacing ? 'rotateY(180deg)' : '',
     transform: rotateVideo ? 'rotate(0.5turn)' : '',
     objectFit: isPortrait || track.name.includes('screen') ? ('contain' as const) : ('cover' as const),
+    height: '200%',
     //objectFit: isPortrait || track.name.includes('screen') ? ('contain' as const) : ('fill' as const),
   };
 
