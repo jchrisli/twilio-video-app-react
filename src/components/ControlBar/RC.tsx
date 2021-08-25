@@ -5,6 +5,7 @@ import TurnLeft from '../../icons/TurnLeft';
 import TurnRight from '../../icons/TurnRight';
 import GoForward from '../../icons/GoForward';
 import GoBackwards from '../../icons/GoBackwards';
+import Help from '../../icons/Help';
 
 interface RCProps {
   onForward: (e: React.MouseEvent) => void;
@@ -12,6 +13,7 @@ interface RCProps {
   onLeft: (e: React.MouseEvent) => void;
   onRight: (e: React.MouseEvent) => void;
   onStop: (e: React.MouseEvent) => void;
+  onHelp: (e: React.MouseEvent) => void;
 }
 
 const IconContainer = styled('div')({
@@ -63,6 +65,11 @@ export default function RC(props: RCProps) {
         </div>
         <div className={classes.containerItem} onMouseDown={props.onRight} onMouseUp={props.onStop}>
           <TurnRight />
+        </div>
+      </IconContainer>
+      <IconContainer>
+        <div className={classes.containerItem} onMouseDown={props.onHelp} onMouseUp={props.onStop}>
+          <Help />
         </div>
       </IconContainer>
     </>

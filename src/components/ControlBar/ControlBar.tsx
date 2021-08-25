@@ -20,6 +20,7 @@ interface ControlBarProps {
   rcOnLeft: (e: React.MouseEvent) => void;
   rcOnRight: (e: React.MouseEvent) => void;
   rcOnStop: (e: React.MouseEvent) => void;
+  rcOnHelp: (e: React.MouseEvent) => void;
   mapOnClickMap: (x: number, y: number, w: number, h: number, workspaceId: number) => void;
   mapOnClickRobot: (robotId: number) => void;
   mapParticipant: RemoteParticipant | null;
@@ -71,6 +72,7 @@ export default function ControlBar(props: ControlBarProps) {
         onBackward={props.rcOnBackward}
         onRight={props.rcOnRight}
         onStop={props.rcOnStop}
+        onHelp={props.rcOnStop}
       ></RC>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>Help</AccordionSummary>

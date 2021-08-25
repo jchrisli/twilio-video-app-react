@@ -236,6 +236,7 @@ export default function Room() {
           rcOnLeft={onDirectionButtonPress.bind(null, 'l')}
           rcOnRight={onDirectionButtonPress.bind(null, 'r')}
           rcOnStop={onButtonRelease}
+          rcOnHelp={onDirectionButtonPress.bind(null, 'h')}
           mapOnClickMap={onRobotGo}
           mapOnClickRobot={onRobotSelect}
           mapOnFocusRobotChange={onMapFocusRobotIdChange}
